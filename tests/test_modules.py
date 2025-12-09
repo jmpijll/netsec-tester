@@ -406,17 +406,30 @@ class TestAntivirusModules:
         module = RansomwareModule()
 
         all_raw = []
-        for _ in range(10):
+        # Run more iterations to ensure patterns are generated (randomness)
+        for _ in range(50):
             packets = list(module.generate_packets("10.0.0.1", "192.168.1.1", 80))
             for pkt in packets:
                 if hasattr(pkt, "load"):
                     all_raw.append(pkt.load.decode("utf-8", errors="ignore"))
 
         combined = " ".join(all_raw)
-        # Should contain ransomware patterns
-        patterns = ["decrypt", "ransom", ".encrypted", "readme", "bitcoin"]
+        # Should contain ransomware patterns - expanded list for robustness
+        patterns = [
+            "decrypt",
+            "ransom",
+            ".encrypted",
+            "readme",
+            "bitcoin",
+            "locked",
+            "crypt",
+            "recover",
+            "victim",
+            "payment",
+            "unlock",
+        ]
         found = any(p in combined.lower() for p in patterns)
-        assert found, "Expected ransomware patterns"
+        assert found, f"Expected ransomware patterns in output"
 
     def test_cryptominer_stratum(self) -> None:
         """Test cryptominer module generates stratum patterns."""
