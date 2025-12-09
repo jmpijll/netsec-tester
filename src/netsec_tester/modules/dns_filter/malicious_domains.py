@@ -116,7 +116,7 @@ class MaliciousDomainsModule(TrafficModule):
         return ModuleInfo(
             name="malicious_domains",
             description="Malicious domain patterns (phishing, malware, C2)",
-            category=TrafficCategory.DNS,
+            category=TrafficCategory.DNS_FILTER,
             protocols=["UDP", "DNS"],
             ports=[53],
         )

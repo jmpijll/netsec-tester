@@ -38,7 +38,7 @@ class DGAModule(TrafficModule):
         return ModuleInfo(
             name="dga",
             description="Domain Generation Algorithm patterns for DNS filtering",
-            category=TrafficCategory.DNS,
+            category=TrafficCategory.DNS_FILTER,
             protocols=["UDP", "DNS"],
             ports=[53],
         )

@@ -25,7 +25,7 @@ scenarios:
 
   # Deep IPS/IDS testing
   ips-deep:
-    description: "Comprehensive IPS/IDS signature testing"
+    description: "Comprehensive IPS/IDS signature testing (all 12 modules)"
     modules:
       - sql_injection
       - xss
@@ -33,23 +33,37 @@ scenarios:
       - directory_traversal
       - exploits
       - c2_beacon
+      - reconnaissance
+      - dos_patterns
+      - brute_force
+      - protocol_anomaly
+      - ssrf_xxe
+      - deserialization
     ip_pool_size: 10
     packets_per_second: 100
-    duration_seconds: 0  # Run until cancelled
+    duration_seconds: 0
     ports:
+      - 22
       - 80
       - 443
+      - 1099
+      - 3306
+      - 3389
       - 8080
       - 8443
     burst_mode: false
 
   # DNS filtering focus
   dns-focus:
-    description: "DNS filtering and tunneling detection tests"
+    description: "DNS filtering and tunneling detection tests (all 7 modules)"
     modules:
       - dns_tunneling
       - dga
       - malicious_domains
+      - dns_exfiltration
+      - dns_rebinding
+      - dns_amplification
+      - fast_flux
     ip_pool_size: 5
     packets_per_second: 50
     duration_seconds: 0
@@ -59,24 +73,33 @@ scenarios:
 
   # Web filtering focus
   web-focus:
-    description: "Web filtering category and URL pattern tests"
+    description: "Web filtering category and URL pattern tests (all 6 modules)"
     modules:
       - web_categories
       - url_patterns
+      - tls_inspection
+      - api_abuse
+      - web_shells
+      - http_smuggling
     ip_pool_size: 10
     packets_per_second: 100
     duration_seconds: 0
     ports:
       - 80
       - 443
+      - 8080
     burst_mode: false
 
   # Antivirus detection focus
   av-focus:
-    description: "Antivirus and malware detection tests"
+    description: "Antivirus and malware detection tests (all 6 modules)"
     modules:
       - eicar
       - av_signatures
+      - ransomware
+      - cryptominer
+      - dropper
+      - archive_evasion
     ip_pool_size: 5
     packets_per_second: 20
     duration_seconds: 0
@@ -84,14 +107,17 @@ scenarios:
       - 80
       - 443
       - 21
+      - 3333
     burst_mode: false
 
   # Video/streaming filtering
   video-focus:
-    description: "Video streaming and content filtering tests"
+    description: "Video streaming and content filtering tests (all 4 modules)"
     modules:
       - streaming
-      - web_categories
+      - p2p_torrent
+      - voip_webrtc
+      - gaming
     ip_pool_size: 5
     packets_per_second: 50
     duration_seconds: 0
@@ -99,50 +125,94 @@ scenarios:
       - 80
       - 443
       - 1935
+      - 5060
+      - 6881
+      - 27015
     burst_mode: false
 
   # Full comprehensive test
   full-mix:
-    description: "All modules at maximum coverage - comprehensive NGFW test"
+    description: "All 45 modules at maximum coverage - comprehensive NGFW test"
     modules:
-      # IPS/IDS
+      # IPS/IDS (12 modules)
       - sql_injection
       - xss
       - command_injection
       - directory_traversal
       - exploits
       - c2_beacon
-      # DNS
+      - reconnaissance
+      - dos_patterns
+      - brute_force
+      - protocol_anomaly
+      - ssrf_xxe
+      - deserialization
+      # DNS (7 modules)
       - dns_tunneling
       - dga
       - malicious_domains
-      # Web filtering
+      - dns_exfiltration
+      - dns_rebinding
+      - dns_amplification
+      - fast_flux
+      # Web filtering (6 modules)
       - web_categories
       - url_patterns
-      # Antivirus
+      - tls_inspection
+      - api_abuse
+      - web_shells
+      - http_smuggling
+      # Antivirus (6 modules)
       - eicar
       - av_signatures
-      # Video
+      - ransomware
+      - cryptominer
+      - dropper
+      - archive_evasion
+      # Video (4 modules)
       - streaming
-      # Benign (for baseline)
+      - p2p_torrent
+      - voip_webrtc
+      - gaming
+      # Benign (7 modules)
       - web_browsing
       - email
       - file_transfer
+      - cloud_services
+      - iot_device
+      - mobile_app
+      - vpn_proxy
+      # Exfiltration (3 modules)
+      - icmp_covert
+      - https_exfil
+      - protocol_abuse
     ip_pool_size: 20
     packets_per_second: 200
     duration_seconds: 0
     ports:
       - 21
+      - 22
       - 25
       - 53
       - 80
       - 110
+      - 123
       - 143
       - 443
       - 993
       - 995
+      - 1080
+      - 1194
+      - 1883
+      - 1935
+      - 3333
+      - 3389
+      - 5060
+      - 6881
       - 8080
       - 8443
+      - 27015
+      - 51820
     burst_mode: false
 
   # Stealth testing - low rate evasion patterns
@@ -163,21 +233,146 @@ scenarios:
 
   # Benign baseline - only legitimate traffic
   benign-only:
-    description: "Legitimate traffic only - for baseline testing"
+    description: "Legitimate traffic only - for baseline testing (all 7 modules)"
     modules:
       - web_browsing
       - email
       - file_transfer
+      - cloud_services
+      - iot_device
+      - mobile_app
+      - vpn_proxy
     ip_pool_size: 10
     packets_per_second: 100
     duration_seconds: 0
     ports:
       - 21
+      - 22
       - 25
       - 80
       - 110
       - 143
       - 443
+      - 1080
+      - 1194
+      - 1883
+      - 51820
+    burst_mode: false
+
+  # NEW SCENARIOS
+
+  # Reconnaissance testing
+  recon-test:
+    description: "Network reconnaissance and scanning detection"
+    modules:
+      - reconnaissance
+      - protocol_anomaly
+    ip_pool_size: 10
+    packets_per_second: 50
+    duration_seconds: 0
+    ports:
+      - 21
+      - 22
+      - 23
+      - 25
+      - 80
+      - 110
+      - 135
+      - 139
+      - 443
+      - 445
+      - 3389
+    burst_mode: false
+
+  # DoS/DDoS testing
+  dos-test:
+    description: "DoS/DDoS attack pattern testing"
+    modules:
+      - dos_patterns
+      - protocol_anomaly
+      - dns_amplification
+    ip_pool_size: 10
+    packets_per_second: 100
+    duration_seconds: 0
+    ports:
+      - 53
+      - 80
+      - 123
+      - 443
+      - 1900
+    burst_mode: true
+
+  # Data exfiltration testing
+  exfil-test:
+    description: "Data exfiltration detection testing"
+    modules:
+      - dns_exfiltration
+      - icmp_covert
+      - https_exfil
+      - protocol_abuse
+    ip_pool_size: 5
+    packets_per_second: 30
+    duration_seconds: 0
+    ports:
+      - 53
+      - 80
+      - 123
+      - 443
+    burst_mode: false
+
+  # Ransomware indicators testing
+  ransomware-test:
+    description: "Ransomware indicator detection testing"
+    modules:
+      - ransomware
+      - cryptominer
+      - dropper
+      - c2_beacon
+    ip_pool_size: 5
+    packets_per_second: 20
+    duration_seconds: 0
+    ports:
+      - 80
+      - 443
+      - 3333
+      - 8080
+    burst_mode: false
+
+  # IoT protocol testing
+  iot-test:
+    description: "IoT device and protocol testing"
+    modules:
+      - iot_device
+      - vpn_proxy
+      - cloud_services
+    ip_pool_size: 10
+    packets_per_second: 50
+    duration_seconds: 0
+    ports:
+      - 80
+      - 443
+      - 554
+      - 1883
+      - 5683
+      - 8123
+    burst_mode: false
+
+  # API security testing
+  api-test:
+    description: "API security and abuse testing"
+    modules:
+      - api_abuse
+      - http_smuggling
+      - ssrf_xxe
+      - deserialization
+    ip_pool_size: 5
+    packets_per_second: 50
+    duration_seconds: 0
+    ports:
+      - 80
+      - 443
+      - 3000
+      - 8080
     burst_mode: false
 
 # Default settings applied to all scenarios unless overridden
@@ -187,4 +382,3 @@ defaults:
   duration_seconds: 0
   burst_mode: false
   burst_size: 10
-

@@ -46,6 +46,12 @@ class ConfigLoader:
         from netsec_tester.modules.ips_ids.directory_traversal import DirectoryTraversalModule
         from netsec_tester.modules.ips_ids.exploits import ExploitsModule
         from netsec_tester.modules.ips_ids.c2_beacon import C2BeaconModule
+        from netsec_tester.modules.ips_ids.reconnaissance import ReconnaissanceModule
+        from netsec_tester.modules.ips_ids.dos_patterns import DoSPatternsModule
+        from netsec_tester.modules.ips_ids.brute_force import BruteForceModule
+        from netsec_tester.modules.ips_ids.protocol_anomaly import ProtocolAnomalyModule
+        from netsec_tester.modules.ips_ids.ssrf_xxe import SSRFXXEModule
+        from netsec_tester.modules.ips_ids.deserialization import DeserializationModule
 
         self.registry.register_module("sql_injection", SQLInjectionModule)
         self.registry.register_module("xss", XSSModule)
@@ -53,43 +59,96 @@ class ConfigLoader:
         self.registry.register_module("directory_traversal", DirectoryTraversalModule)
         self.registry.register_module("exploits", ExploitsModule)
         self.registry.register_module("c2_beacon", C2BeaconModule)
+        self.registry.register_module("reconnaissance", ReconnaissanceModule)
+        self.registry.register_module("dos_patterns", DoSPatternsModule)
+        self.registry.register_module("brute_force", BruteForceModule)
+        self.registry.register_module("protocol_anomaly", ProtocolAnomalyModule)
+        self.registry.register_module("ssrf_xxe", SSRFXXEModule)
+        self.registry.register_module("deserialization", DeserializationModule)
 
         # Import and register DNS modules
         from netsec_tester.modules.dns_filter.tunneling import DNSTunnelingModule
         from netsec_tester.modules.dns_filter.dga import DGAModule
         from netsec_tester.modules.dns_filter.malicious_domains import MaliciousDomainsModule
+        from netsec_tester.modules.dns_filter.exfiltration import DNSExfiltrationModule
+        from netsec_tester.modules.dns_filter.rebinding import DNSRebindingModule
+        from netsec_tester.modules.dns_filter.amplification import DNSAmplificationModule
+        from netsec_tester.modules.dns_filter.fast_flux import FastFluxModule
 
         self.registry.register_module("dns_tunneling", DNSTunnelingModule)
         self.registry.register_module("dga", DGAModule)
         self.registry.register_module("malicious_domains", MaliciousDomainsModule)
+        self.registry.register_module("dns_exfiltration", DNSExfiltrationModule)
+        self.registry.register_module("dns_rebinding", DNSRebindingModule)
+        self.registry.register_module("dns_amplification", DNSAmplificationModule)
+        self.registry.register_module("fast_flux", FastFluxModule)
 
         # Import and register Web filtering modules
         from netsec_tester.modules.web_filter.categories import WebCategoryModule
         from netsec_tester.modules.web_filter.url_patterns import URLPatternsModule
+        from netsec_tester.modules.web_filter.tls_inspection import TLSInspectionModule
+        from netsec_tester.modules.web_filter.api_abuse import APIAbuseModule
+        from netsec_tester.modules.web_filter.web_shells import WebShellsModule
+        from netsec_tester.modules.web_filter.http_smuggling import HTTPSmugglingModule
 
         self.registry.register_module("web_categories", WebCategoryModule)
         self.registry.register_module("url_patterns", URLPatternsModule)
+        self.registry.register_module("tls_inspection", TLSInspectionModule)
+        self.registry.register_module("api_abuse", APIAbuseModule)
+        self.registry.register_module("web_shells", WebShellsModule)
+        self.registry.register_module("http_smuggling", HTTPSmugglingModule)
 
         # Import and register Antivirus modules
         from netsec_tester.modules.antivirus.eicar import EICARModule
         from netsec_tester.modules.antivirus.signatures import AVSignaturesModule
+        from netsec_tester.modules.antivirus.ransomware import RansomwareModule
+        from netsec_tester.modules.antivirus.cryptominer import CryptominerModule
+        from netsec_tester.modules.antivirus.dropper import DropperModule
+        from netsec_tester.modules.antivirus.archive_evasion import ArchiveEvasionModule
 
         self.registry.register_module("eicar", EICARModule)
         self.registry.register_module("av_signatures", AVSignaturesModule)
+        self.registry.register_module("ransomware", RansomwareModule)
+        self.registry.register_module("cryptominer", CryptominerModule)
+        self.registry.register_module("dropper", DropperModule)
+        self.registry.register_module("archive_evasion", ArchiveEvasionModule)
 
         # Import and register Video/Streaming modules
         from netsec_tester.modules.video_filter.streaming import StreamingModule
+        from netsec_tester.modules.video_filter.p2p_torrent import P2PTorrentModule
+        from netsec_tester.modules.video_filter.voip_webrtc import VoIPWebRTCModule
+        from netsec_tester.modules.video_filter.gaming import GamingModule
 
         self.registry.register_module("streaming", StreamingModule)
+        self.registry.register_module("p2p_torrent", P2PTorrentModule)
+        self.registry.register_module("voip_webrtc", VoIPWebRTCModule)
+        self.registry.register_module("gaming", GamingModule)
 
         # Import and register Benign traffic modules
         from netsec_tester.modules.benign.web_browsing import WebBrowsingModule
         from netsec_tester.modules.benign.email import EmailModule
         from netsec_tester.modules.benign.file_transfer import FileTransferModule
+        from netsec_tester.modules.benign.cloud_services import CloudServicesModule
+        from netsec_tester.modules.benign.iot_device import IoTDeviceModule
+        from netsec_tester.modules.benign.mobile_app import MobileAppModule
+        from netsec_tester.modules.benign.vpn_proxy import VPNProxyModule
 
         self.registry.register_module("web_browsing", WebBrowsingModule)
         self.registry.register_module("email", EmailModule)
         self.registry.register_module("file_transfer", FileTransferModule)
+        self.registry.register_module("cloud_services", CloudServicesModule)
+        self.registry.register_module("iot_device", IoTDeviceModule)
+        self.registry.register_module("mobile_app", MobileAppModule)
+        self.registry.register_module("vpn_proxy", VPNProxyModule)
+
+        # Import and register Exfiltration modules
+        from netsec_tester.modules.exfiltration.icmp_covert import ICMPCovertModule
+        from netsec_tester.modules.exfiltration.https_exfil import HTTPSExfilModule
+        from netsec_tester.modules.exfiltration.protocol_abuse import ProtocolAbuseModule
+
+        self.registry.register_module("icmp_covert", ICMPCovertModule)
+        self.registry.register_module("https_exfil", HTTPSExfilModule)
+        self.registry.register_module("protocol_abuse", ProtocolAbuseModule)
 
     def _create_default_config(self, config_path: Path) -> None:
         """Create default configuration file.
@@ -232,5 +291,3 @@ class ConfigLoader:
             if value is None:
                 return default
         return value
-
-

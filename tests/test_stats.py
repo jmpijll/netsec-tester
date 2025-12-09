@@ -64,7 +64,7 @@ class TestStatsCollector:
 
         stats.record_packet(
             src_ip="10.0.0.0",
-            category=TrafficCategory.DNS,
+            category=TrafficCategory.DNS_FILTER,
             protocol="UDP",
             module_name="dns_tunneling",
         )
@@ -74,7 +74,7 @@ class TestStatsCollector:
         assert snapshot.total_packets == 6
         assert len(snapshot.packets_per_ip) == 5
         assert snapshot.packets_per_category["ips_ids"] == 5
-        assert snapshot.packets_per_category["dns"] == 1
+        assert snapshot.packets_per_category["dns_filter"] == 1
         assert snapshot.packets_per_protocol["TCP"] == 5
         assert snapshot.packets_per_protocol["UDP"] == 1
 
@@ -137,9 +137,9 @@ class TestTrafficCategory:
     def test_categories_exist(self) -> None:
         """Test all expected categories exist."""
         assert TrafficCategory.IPS_IDS.value == "ips_ids"
-        assert TrafficCategory.DNS.value == "dns"
-        assert TrafficCategory.WEB.value == "web"
+        assert TrafficCategory.DNS_FILTER.value == "dns_filter"
+        assert TrafficCategory.WEB_FILTER.value == "web_filter"
         assert TrafficCategory.ANTIVIRUS.value == "antivirus"
-        assert TrafficCategory.VIDEO.value == "video"
+        assert TrafficCategory.VIDEO_FILTER.value == "video_filter"
         assert TrafficCategory.BENIGN.value == "benign"
-
+        assert TrafficCategory.EXFILTRATION.value == "exfiltration"

@@ -100,7 +100,7 @@ class WebCategoryModule(TrafficModule):
         return ModuleInfo(
             name="web_categories",
             description="Web filtering category tests (adult, gambling, malware, etc.)",
-            category=TrafficCategory.WEB,
+            category=TrafficCategory.WEB_FILTER,
             protocols=["TCP", "HTTP"],
             ports=[80, 443, 8080],
         )

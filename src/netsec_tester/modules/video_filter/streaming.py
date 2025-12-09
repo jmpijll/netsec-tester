@@ -127,7 +127,7 @@ class StreamingModule(TrafficModule):
         return ModuleInfo(
             name="streaming",
             description="Video streaming platform patterns for content filtering",
-            category=TrafficCategory.VIDEO,
+            category=TrafficCategory.VIDEO_FILTER,
             protocols=["TCP", "HTTP", "RTMP"],
             ports=[80, 443, 1935, 8080],
         )

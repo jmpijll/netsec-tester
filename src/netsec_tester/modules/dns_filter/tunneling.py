@@ -35,7 +35,7 @@ class DNSTunnelingModule(TrafficModule):
         return ModuleInfo(
             name="dns_tunneling",
             description="DNS tunneling patterns (iodine, dnscat2 style)",
-            category=TrafficCategory.DNS,
+            category=TrafficCategory.DNS_FILTER,
             protocols=["UDP", "DNS"],
             ports=[53],
         )

@@ -12,11 +12,12 @@ class TrafficCategory(Enum):
     """Categories of traffic for grouping and reporting."""
 
     IPS_IDS = "ips_ids"
-    DNS = "dns"
-    WEB = "web"
+    DNS_FILTER = "dns_filter"
+    WEB_FILTER = "web_filter"
     ANTIVIRUS = "antivirus"
-    VIDEO = "video"
+    VIDEO_FILTER = "video_filter"
     BENIGN = "benign"
+    EXFILTRATION = "exfiltration"
 
 
 @dataclass

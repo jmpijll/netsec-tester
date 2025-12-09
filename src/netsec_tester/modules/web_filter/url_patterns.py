@@ -101,7 +101,7 @@ class URLPatternsModule(TrafficModule):
         return ModuleInfo(
             name="url_patterns",
             description="Suspicious URL patterns for web filtering",
-            category=TrafficCategory.WEB,
+            category=TrafficCategory.WEB_FILTER,
             protocols=["TCP", "HTTP"],
             ports=[80, 443, 8080],
         )
