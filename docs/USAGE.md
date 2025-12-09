@@ -12,11 +12,11 @@
 
 ```bash
 # Clone the repository
-git clone https://github.com/netsec-tester/netsec-tester.git
+git clone https://github.com/jmpijll/netsec-tester.git
 cd netsec-tester
 
 # Create and activate virtual environment
-python -m venv venv
+python3 -m venv venv
 source venv/bin/activate  # Linux/macOS
 # or
 venv\Scripts\activate     # Windows
@@ -120,53 +120,119 @@ Show detailed information about a specific scenario.
 netsec-tester info SCENARIO_NAME
 ```
 
-## Available Scenarios
+## Available Scenarios (15)
 
-### quick-test
-- **Duration**: 60 seconds
-- **Purpose**: Brief validation of all traffic categories
-- **Modules**: SQL injection, XSS, DNS tunneling, DGA, web categories, EICAR, web browsing
+### General Testing
 
-### ips-deep
-- **Duration**: Until cancelled
-- **Purpose**: Comprehensive IPS/IDS signature testing
-- **Modules**: SQL injection, XSS, command injection, directory traversal, exploits, C2 beacon
+| Scenario | Description | Modules |
+|----------|-------------|---------|
+| `quick-test` | Brief validation of all traffic categories | 7 core modules |
+| `full-mix` | Comprehensive NGFW testing with all modules | All 45 modules |
+| `stealth` | Low-rate, evasion-focused patterns | 4 evasion modules |
+| `benign-only` | Baseline testing with legitimate traffic only | 7 benign modules |
 
-### dns-focus
-- **Duration**: Until cancelled
-- **Purpose**: DNS filtering and tunneling detection
-- **Modules**: DNS tunneling, DGA, malicious domains
+### Category-Focused Testing
 
-### web-focus
-- **Duration**: Until cancelled
-- **Purpose**: Web filtering category tests
-- **Modules**: Web categories, URL patterns
+| Scenario | Description | Modules |
+|----------|-------------|---------|
+| `ips-deep` | Comprehensive IPS/IDS signature testing | 12 IPS/IDS modules |
+| `dns-focus` | DNS filtering and tunneling detection | 7 DNS modules |
+| `web-focus` | Web filtering category tests | 6 web modules |
+| `av-focus` | Antivirus detection tests | 6 AV modules |
+| `video-focus` | Video streaming content filtering | 4 video modules |
 
-### av-focus
-- **Duration**: Until cancelled
-- **Purpose**: Antivirus detection tests
-- **Modules**: EICAR, AV signatures
+### Specialized Testing
 
-### video-focus
-- **Duration**: Until cancelled
-- **Purpose**: Video streaming content filtering
-- **Modules**: Streaming, web categories
+| Scenario | Description | Modules |
+|----------|-------------|---------|
+| `recon-test` | Network reconnaissance and scanning detection | Reconnaissance, protocol anomaly |
+| `dos-test` | DoS/DDoS attack pattern testing | DoS patterns, protocol anomaly |
+| `exfil-test` | Data exfiltration detection testing | DNS exfil, ICMP covert, HTTPS exfil, protocol abuse |
+| `ransomware-test` | Ransomware indicator detection | Ransomware, cryptominer, dropper, archive evasion |
+| `iot-test` | IoT device and protocol testing | IoT device, cloud services |
+| `api-test` | API security and abuse testing | API abuse, HTTP smuggling, web shells |
 
-### full-mix
-- **Duration**: Until cancelled
-- **Purpose**: Comprehensive NGFW testing with all modules
-- **Modules**: All available modules
+## Available Modules (45)
 
-### stealth
-- **Duration**: Until cancelled
-- **Purpose**: Low-rate evasion testing
-- **Rate**: 5 packets/second
-- **Modules**: SQL injection, XSS, C2 beacon, DNS tunneling
+### IPS/IDS Modules (12)
 
-### benign-only
-- **Duration**: Until cancelled
-- **Purpose**: Baseline testing with legitimate traffic only
-- **Modules**: Web browsing, email, file transfer
+| Module | Description |
+|--------|-------------|
+| `sql_injection` | SQL injection attack patterns (UNION, blind, error-based) |
+| `xss` | Cross-site scripting payloads (reflected, stored, DOM-based) |
+| `command_injection` | OS command injection patterns (bash, cmd, PowerShell) |
+| `directory_traversal` | Path traversal and local file inclusion |
+| `exploits` | Known CVE patterns (Log4Shell, Shellshock, ProxyLogon) |
+| `c2_beacon` | Command & Control beaconing patterns |
+| `reconnaissance` | Port scanning, OS fingerprinting, vulnerability scanner patterns |
+| `dos_patterns` | SYN flood, Slowloris, DNS/NTP/SSDP amplification |
+| `brute_force` | SSH, FTP, HTTP auth, SMTP, RDP, MySQL brute force |
+| `protocol_anomaly` | Malformed headers, invalid TCP flags, fragmentation attacks |
+| `ssrf_xxe` | Server-side request forgery, XML external entity injection |
+| `deserialization` | Java, PHP, .NET, Python pickle deserialization attacks |
+
+### DNS Filter Modules (7)
+
+| Module | Description |
+|--------|-------------|
+| `dns_tunneling` | Data exfiltration via DNS queries |
+| `dga` | Domain Generation Algorithm patterns |
+| `malicious_domains` | Known malicious domain categories |
+| `dns_exfiltration` | Base64/hex encoded data in DNS queries |
+| `dns_rebinding` | Short TTL, IP switching attacks |
+| `dns_amplification` | ANY queries, DNSSEC abuse, open resolver attacks |
+| `fast_flux` | Botnet domain patterns, rapid IP rotation |
+
+### Web Filter Modules (6)
+
+| Module | Description |
+|--------|-------------|
+| `web_categories` | Category-based URL filtering (gambling, adult, malware) |
+| `url_patterns` | Suspicious URL pattern detection |
+| `tls_inspection` | SNI filtering, JA3 fingerprints, certificate anomalies |
+| `api_abuse` | GraphQL injection, JWT attacks, rate limit bypass |
+| `web_shells` | Shell access patterns, upload attempts, China Chopper |
+| `http_smuggling` | CL.TE, TE.CL, TE.TE request smuggling |
+
+### Antivirus Modules (6)
+
+| Module | Description |
+|--------|-------------|
+| `eicar` | EICAR test file transfers (HTTP, FTP, SMTP) |
+| `av_signatures` | Known malware signature triggers |
+| `ransomware` | File extensions, ransom notes, key exchange patterns |
+| `cryptominer` | Stratum protocol, mining pools, WebMiner |
+| `dropper` | PowerShell cradles, LOLBins, macro document patterns |
+| `archive_evasion` | Nested archives, polyglots, zip bomb patterns |
+
+### Video/Streaming Modules (4)
+
+| Module | Description |
+|--------|-------------|
+| `streaming` | RTMP, HLS, DASH streaming protocols |
+| `p2p_torrent` | BitTorrent handshakes, DHT, tracker requests |
+| `voip_webrtc` | SIP, RTP, STUN/TURN, Microsoft Teams patterns |
+| `gaming` | Steam, Xbox Live, PSN, game server queries |
+
+### Benign Traffic Modules (7)
+
+| Module | Description |
+|--------|-------------|
+| `web_browsing` | Normal HTTP/HTTPS browsing patterns |
+| `email` | SMTP, IMAP, POP3 traffic |
+| `file_transfer` | FTP, SFTP file transfer patterns |
+| `cloud_services` | AWS, Azure, GCP, Office 365 API patterns |
+| `iot_device` | MQTT, CoAP, smart home, IP camera protocols |
+| `mobile_app` | App stores, push notifications, analytics |
+| `vpn_proxy` | OpenVPN, WireGuard, IPsec, SOCKS, Tor detection |
+
+### Exfiltration Modules (3)
+
+| Module | Description |
+|--------|-------------|
+| `icmp_covert` | Data in ICMP payload, oversized pings, tunneling |
+| `https_exfil` | Large POSTs to cloud storage, webhooks |
+| `protocol_abuse` | NTP covert channels, HTTP headers, TCP timestamps |
 
 ## Understanding the Statistics Display
 
@@ -181,16 +247,17 @@ During test execution, a live statistics display shows:
 Shows the top 10 source IPs by packet count, demonstrating traffic distribution across virtual IPs.
 
 ### Packets by Category
-Shows traffic distribution across categories:
+Shows traffic distribution across all 7 categories:
 - `ips_ids`: IPS/IDS signature testing traffic
 - `dns`: DNS filtering test traffic
 - `web`: Web filtering test traffic
 - `antivirus`: Antivirus detection test traffic
 - `video`: Video streaming test traffic
 - `benign`: Normal/legitimate traffic
+- `exfiltration`: Data exfiltration test traffic
 
 ### Packets by Protocol
-Shows protocol distribution (TCP, UDP, DNS, etc.)
+Shows protocol distribution (TCP, UDP, DNS, ICMP, etc.)
 
 ## Custom Configuration
 
@@ -204,6 +271,7 @@ scenarios:
       - sql_injection
       - dns_tunneling
       - eicar
+      - icmp_covert
     ip_pool_size: 10
     packets_per_second: 75
     duration_seconds: 120
@@ -247,10 +315,13 @@ Press `Ctrl+C` to gracefully stop a running test. A summary will be displayed sh
 - Reduce the `--rate` parameter if system is overloaded
 - Check for firewall rules blocking outbound traffic from the test machine
 
+### Import errors or missing modules
+- Ensure you've installed the package: `pip install -e .`
+- Check that all dependencies are installed: `pip install -e ".[dev]"`
+
 ## Security Considerations
 
 - **Use only in lab environments**: This tool generates traffic that may be flagged as malicious
 - **Get authorization**: Ensure you have permission to test the network
 - **Isolated testing**: Use isolated network segments to prevent unintended impact
 - **Traffic is simulated**: All "malicious" patterns use industry-standard test signatures (like EICAR) that trigger detections without causing actual harm
-

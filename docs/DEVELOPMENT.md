@@ -12,11 +12,11 @@
 
 ```bash
 # Clone the repository
-git clone https://github.com/netsec-tester/netsec-tester.git
+git clone https://github.com/jmpijll/netsec-tester.git
 cd netsec-tester
 
 # Create virtual environment
-python -m venv venv
+python3 -m venv venv
 source venv/bin/activate  # Linux/macOS
 # or: venv\Scripts\activate  # Windows
 
@@ -31,13 +31,16 @@ pip install -e ".[dev]"
 pytest
 
 # Run with coverage
-pytest --cov=netsec_tester
+pytest --cov=netsec_tester --cov-report=term-missing
 
 # Run specific test file
 pytest tests/test_ip_pool.py
 
 # Run with verbose output
 pytest -v
+
+# Run only fast tests (skip slow integration tests)
+pytest -m "not slow"
 ```
 
 ### Code Quality
@@ -65,20 +68,21 @@ src/netsec_tester/
         engine.py       # Traffic generation engine
         stats.py        # Statistics collection and display
         ip_pool.py      # Virtual IP pool management
-    modules/            # Traffic generation modules
-        base.py         # Abstract base class
-        ips_ids/        # IPS/IDS attack patterns
-        dns_filter/     # DNS filtering tests
-        web_filter/     # Web filtering tests
-        antivirus/      # AV detection tests
-        video_filter/   # Streaming detection
-        benign/         # Normal traffic patterns
+    modules/            # 45 traffic generation modules
+        base.py         # Abstract base class + TrafficCategory enum
+        ips_ids/        # 12 IPS/IDS attack patterns
+        dns_filter/     # 7 DNS filtering tests
+        web_filter/     # 6 Web filtering tests
+        antivirus/      # 6 AV detection tests
+        video_filter/   # 4 Streaming detection
+        benign/         # 7 Normal traffic patterns
+        exfiltration/   # 3 Data exfiltration patterns
     scenarios/
         base.py         # Scenario class
         registry.py     # Scenario discovery and registration
     config/
         loader.py       # Configuration loading
-        scenarios.yaml  # Built-in scenario definitions
+        scenarios.yaml  # 15 built-in scenario definitions
 ```
 
 ### Key Classes
@@ -128,9 +132,25 @@ Thread-safe statistics collection:
 - Per-protocol distribution
 - Packets per second calculation
 
-### Adding a New Module
+### Traffic Categories (7)
 
-1. Create a new file in the appropriate category directory:
+Available categories in `TrafficCategory` enum:
+
+| Category | Value | Description |
+|----------|-------|-------------|
+| `IPS_IDS` | `ips_ids` | Intrusion prevention/detection patterns |
+| `DNS` | `dns` | DNS filtering tests |
+| `WEB` | `web` | Web filtering tests |
+| `ANTIVIRUS` | `antivirus` | AV detection tests |
+| `VIDEO` | `video` | Video/streaming content |
+| `BENIGN` | `benign` | Normal/legitimate traffic |
+| `EXFILTRATION` | `exfiltration` | Data exfiltration patterns |
+
+## Adding a New Module
+
+### 1. Create the Module File
+
+Create a new file in the appropriate category directory:
 
 ```python
 # src/netsec_tester/modules/ips_ids/my_attack.py
@@ -141,13 +161,20 @@ from scapy.packet import Packet, Raw
 from netsec_tester.modules.base import ModuleInfo, TrafficCategory, TrafficModule
 
 class MyAttackModule(TrafficModule):
+    """Generates traffic patterns for my custom attack."""
+
     def __init__(self) -> None:
         self._counter = 0
+        self._payloads = [
+            "attack_payload_1",
+            "attack_payload_2",
+            "attack_payload_3",
+        ]
 
     def get_info(self) -> ModuleInfo:
         return ModuleInfo(
             name="my_attack",
-            description="My custom attack pattern",
+            description="My custom attack pattern for testing specific signatures",
             category=TrafficCategory.IPS_IDS,
             protocols=["TCP", "HTTP"],
             ports=[80, 443],
@@ -162,86 +189,79 @@ class MyAttackModule(TrafficModule):
         port = dst_port or 80
         self._counter += 1
 
-        # Your attack pattern here
-        payload = f"GET /attack?payload={self._counter} HTTP/1.1\r\nHost: {dst_ip}\r\n\r\n"
+        # Rotate through payloads
+        payload = self._payloads[self._counter % len(self._payloads)]
+        
+        http_request = (
+            f"GET /attack?payload={payload} HTTP/1.1\r\n"
+            f"Host: {dst_ip}\r\n"
+            f"User-Agent: Mozilla/5.0\r\n"
+            f"\r\n"
+        )
 
         packet = (
             IP(src=src_ip, dst=dst_ip)
-            / TCP(sport=40000 + self._counter, dport=port, flags="PA")
-            / Raw(load=payload.encode())
+            / TCP(sport=40000 + (self._counter % 1000), dport=port, flags="PA")
+            / Raw(load=http_request.encode())
         )
 
         yield packet
 ```
 
-2. Register the module in `config/loader.py`:
+### 2. Register the Module
+
+Add imports and registration in `config/loader.py`:
 
 ```python
 from netsec_tester.modules.ips_ids.my_attack import MyAttackModule
 self.registry.register_module("my_attack", MyAttackModule)
 ```
 
-3. Add to `__init__.py` if desired for easier imports:
+### 3. Update Package Exports
+
+Add to `modules/ips_ids/__init__.py`:
 
 ```python
-# modules/ips_ids/__init__.py
 from netsec_tester.modules.ips_ids.my_attack import MyAttackModule
 __all__ = [..., "MyAttackModule"]
 ```
 
-4. Add to scenario definitions:
+### 4. Add to Scenario Definitions
+
+Update `config/scenarios.yaml`:
 
 ```yaml
-# config/scenarios.yaml
 my-scenario:
   description: "Test with my new attack"
   modules:
     - my_attack
     - sql_injection
+  ip_pool_size: 5
+  packets_per_second: 50
 ```
 
-5. Add tests:
+### 5. Write Tests
+
+Add to `tests/test_modules.py`:
 
 ```python
-# tests/test_modules.py
 def test_my_attack_module():
+    """Test MyAttackModule generates valid packets."""
     module = MyAttackModule()
     info = module.get_info()
+    
     assert info.name == "my_attack"
+    assert info.category == TrafficCategory.IPS_IDS
+    assert 80 in info.ports
 
     packets = list(module.generate_packets("10.0.0.1", "192.168.1.1", 80))
     assert len(packets) > 0
-```
-
-### Traffic Categories
-
-Available categories in `TrafficCategory` enum:
-- `IPS_IDS`: Intrusion prevention/detection patterns
-- `DNS`: DNS filtering tests
-- `WEB`: Web filtering tests
-- `ANTIVIRUS`: AV detection tests
-- `VIDEO`: Video/streaming content
-- `BENIGN`: Normal/legitimate traffic
-
-### Configuration System
-
-Scenarios are defined in YAML format:
-
-```yaml
-scenarios:
-  scenario-name:
-    description: "Scenario description"
-    modules:
-      - module_name_1
-      - module_name_2
-    ip_pool_size: 10          # Number of virtual IPs
-    packets_per_second: 100   # Rate limit
-    duration_seconds: 0       # 0 = unlimited
-    ports:                    # Target ports
-      - 80
-      - 443
-    burst_mode: false         # Enable burst mode
-    burst_size: 10            # Packets per burst
+    
+    # Verify packet structure
+    packet = packets[0]
+    assert packet.haslayer(IP)
+    assert packet.haslayer(TCP)
+    assert packet.haslayer(Raw)
 ```
 
 ## Scapy Packet Crafting Tips
@@ -272,6 +292,32 @@ packet = (
 )
 ```
 
+### DNS with Numeric Query Type
+
+For compatibility with newer Scapy versions, use numeric query types:
+
+```python
+# Use numeric value instead of string for query types
+# A=1, AAAA=28, MX=15, TXT=16, ANY=255
+packet = (
+    IP(src="10.0.0.1", dst="8.8.8.8")
+    / UDP(sport=53000, dport=53)
+    / DNS(rd=1, qd=DNSQR(qname="example.com", qtype=255))  # ANY query
+)
+```
+
+### ICMP Packet
+
+```python
+from scapy.layers.inet import IP, ICMP
+
+packet = (
+    IP(src="10.0.0.1", dst="192.168.1.1")
+    / ICMP(type=8, code=0)  # Echo request
+    / Raw(load=b"AAAA" * 64)  # Payload
+)
+```
+
 ### Sending Packets
 
 ```python
@@ -287,6 +333,8 @@ sendp(Ether() / packet, verbose=0)
 
 ## Best Practices
 
+### Module Development
+
 1. **Keep modules focused**: Each module should test one category of patterns
 2. **Rotate payloads**: Use counters to cycle through different payloads
 3. **Use realistic headers**: Include proper HTTP headers, User-Agents, etc.
@@ -295,6 +343,35 @@ sendp(Ether() / packet, verbose=0)
 6. **Thread safety**: Use locks if module maintains shared state
 7. **Error handling**: Handle packet generation errors gracefully
 
+### Code Quality
+
+1. **Type hints**: Use type hints for all function signatures
+2. **Docstrings**: Document all classes and public methods
+3. **Tests**: Write tests for all new modules
+4. **Linting**: Pass `ruff check` before committing
+5. **Type checking**: Pass `mypy` before committing
+
+## Configuration System
+
+Scenarios are defined in YAML format:
+
+```yaml
+scenarios:
+  scenario-name:
+    description: "Scenario description"
+    modules:
+      - module_name_1
+      - module_name_2
+    ip_pool_size: 10          # Number of virtual IPs
+    packets_per_second: 100   # Rate limit
+    duration_seconds: 0       # 0 = unlimited
+    ports:                    # Target ports
+      - 80
+      - 443
+    burst_mode: false         # Enable burst mode
+    burst_size: 10            # Packets per burst
+```
+
 ## Contributing
 
 1. Fork the repository
@@ -302,15 +379,15 @@ sendp(Ether() / packet, verbose=0)
 3. Write tests for new functionality
 4. Ensure all tests pass: `pytest`
 5. Run linting: `ruff check src tests`
-6. Commit changes: `git commit -am 'Add new feature'`
-7. Push to branch: `git push origin feature/my-feature`
-8. Create a Pull Request
+6. Run type checking: `mypy src`
+7. Commit changes: `git commit -am 'Add new feature'`
+8. Push to branch: `git push origin feature/my-feature`
+9. Create a Pull Request
 
 ## Release Process
 
 1. Update version in `pyproject.toml` and `src/netsec_tester/__init__.py`
 2. Update CHANGELOG.md
-3. Create git tag: `git tag v1.0.0`
-4. Push tag: `git push origin v1.0.0`
-5. GitHub Actions will build and publish to PyPI
-
+3. Create git tag: `git tag v1.x.x`
+4. Push tag: `git push origin v1.x.x`
+5. GitHub Actions will build and run tests

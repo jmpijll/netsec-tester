@@ -1,0 +1,9 @@
+blank_issues_enabled: false
+contact_links:
+  - name: Question or Discussion
+    url: https://github.com/jmpijll/netsec-tester/discussions
+    about: Please ask questions and discuss ideas in Discussions
+  - name: Security Vulnerability
+    url: https://github.com/jmpijll/netsec-tester/security/policy
+    about: Please report security vulnerabilities according to our security policy
+

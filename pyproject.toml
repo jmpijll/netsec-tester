@@ -55,10 +55,11 @@ dev = [
 netsec-tester = "netsec_tester.cli:main"
 
 [project.urls]
-Homepage = "https://github.com/netsec-tester/netsec-tester"
-Documentation = "https://github.com/netsec-tester/netsec-tester#readme"
-Repository = "https://github.com/netsec-tester/netsec-tester"
-Issues = "https://github.com/netsec-tester/netsec-tester/issues"
+Homepage = "https://github.com/jmpijll/netsec-tester"
+Documentation = "https://github.com/jmpijll/netsec-tester#readme"
+Repository = "https://github.com/jmpijll/netsec-tester"
+Issues = "https://github.com/jmpijll/netsec-tester/issues"
+Changelog = "https://github.com/jmpijll/netsec-tester/blob/main/CHANGELOG.md"
 
 [tool.setuptools.packages.find]
 where = ["src"]
