@@ -1,0 +1,190 @@
+# NetSec Tester - Scenario Configuration
+# This file defines the built-in test scenarios
+
+scenarios:
+  # Quick test - brief test of all traffic categories
+  quick-test:
+    description: "Brief test of all traffic categories (60 seconds)"
+    modules:
+      - sql_injection
+      - xss
+      - dns_tunneling
+      - dga
+      - web_categories
+      - eicar
+      - web_browsing
+    ip_pool_size: 5
+    packets_per_second: 50
+    duration_seconds: 60
+    ports:
+      - 80
+      - 443
+      - 53
+      - 8080
+    burst_mode: false
+
+  # Deep IPS/IDS testing
+  ips-deep:
+    description: "Comprehensive IPS/IDS signature testing"
+    modules:
+      - sql_injection
+      - xss
+      - command_injection
+      - directory_traversal
+      - exploits
+      - c2_beacon
+    ip_pool_size: 10
+    packets_per_second: 100
+    duration_seconds: 0  # Run until cancelled
+    ports:
+      - 80
+      - 443
+      - 8080
+      - 8443
+    burst_mode: false
+
+  # DNS filtering focus
+  dns-focus:
+    description: "DNS filtering and tunneling detection tests"
+    modules:
+      - dns_tunneling
+      - dga
+      - malicious_domains
+    ip_pool_size: 5
+    packets_per_second: 50
+    duration_seconds: 0
+    ports:
+      - 53
+    burst_mode: false
+
+  # Web filtering focus
+  web-focus:
+    description: "Web filtering category and URL pattern tests"
+    modules:
+      - web_categories
+      - url_patterns
+    ip_pool_size: 10
+    packets_per_second: 100
+    duration_seconds: 0
+    ports:
+      - 80
+      - 443
+    burst_mode: false
+
+  # Antivirus detection focus
+  av-focus:
+    description: "Antivirus and malware detection tests"
+    modules:
+      - eicar
+      - av_signatures
+    ip_pool_size: 5
+    packets_per_second: 20
+    duration_seconds: 0
+    ports:
+      - 80
+      - 443
+      - 21
+    burst_mode: false
+
+  # Video/streaming filtering
+  video-focus:
+    description: "Video streaming and content filtering tests"
+    modules:
+      - streaming
+      - web_categories
+    ip_pool_size: 5
+    packets_per_second: 50
+    duration_seconds: 0
+    ports:
+      - 80
+      - 443
+      - 1935
+    burst_mode: false
+
+  # Full comprehensive test
+  full-mix:
+    description: "All modules at maximum coverage - comprehensive NGFW test"
+    modules:
+      # IPS/IDS
+      - sql_injection
+      - xss
+      - command_injection
+      - directory_traversal
+      - exploits
+      - c2_beacon
+      # DNS
+      - dns_tunneling
+      - dga
+      - malicious_domains
+      # Web filtering
+      - web_categories
+      - url_patterns
+      # Antivirus
+      - eicar
+      - av_signatures
+      # Video
+      - streaming
+      # Benign (for baseline)
+      - web_browsing
+      - email
+      - file_transfer
+    ip_pool_size: 20
+    packets_per_second: 200
+    duration_seconds: 0
+    ports:
+      - 21
+      - 25
+      - 53
+      - 80
+      - 110
+      - 143
+      - 443
+      - 993
+      - 995
+      - 8080
+      - 8443
+    burst_mode: false
+
+  # Stealth testing - low rate evasion patterns
+  stealth:
+    description: "Low-rate, evasion-focused patterns for detection testing"
+    modules:
+      - sql_injection
+      - xss
+      - c2_beacon
+      - dns_tunneling
+    ip_pool_size: 3
+    packets_per_second: 5
+    duration_seconds: 0
+    ports:
+      - 80
+      - 443
+    burst_mode: false
+
+  # Benign baseline - only legitimate traffic
+  benign-only:
+    description: "Legitimate traffic only - for baseline testing"
+    modules:
+      - web_browsing
+      - email
+      - file_transfer
+    ip_pool_size: 10
+    packets_per_second: 100
+    duration_seconds: 0
+    ports:
+      - 21
+      - 25
+      - 80
+      - 110
+      - 143
+      - 443
+    burst_mode: false
+
+# Default settings applied to all scenarios unless overridden
+defaults:
+  ip_pool_size: 10
+  packets_per_second: 100
+  duration_seconds: 0
+  burst_mode: false
+  burst_size: 10
+
