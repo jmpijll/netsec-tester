@@ -56,13 +56,17 @@ class ProtocolAbuseModule(TrafficModule):
 
         ntp_packet = struct.pack(
             ">BBbbII4sQQQQ",
-            flags, stratum, poll, precision,
-            root_delay, root_dispersion,
+            flags,
+            stratum,
+            poll,
+            precision,
+            root_delay,
+            root_dispersion,
             ref_id,
             ref_timestamp,
             ref_timestamp,
             ref_timestamp,
-            ref_timestamp
+            ref_timestamp,
         )
 
         packet = (
@@ -72,9 +76,7 @@ class ProtocolAbuseModule(TrafficModule):
         )
         yield packet
 
-    def _generate_http_header_covert(
-        self, src_ip: str, dst_ip: str, port: int
-    ) -> Iterator[Packet]:
+    def _generate_http_header_covert(self, src_ip: str, dst_ip: str, port: int) -> Iterator[Packet]:
         """Generate HTTP header-based covert channel."""
         # Data hidden in custom headers or cookies
         fake_data = "username=admin&password=secret"
@@ -111,20 +113,12 @@ class ProtocolAbuseModule(TrafficModule):
             ("NOP", None),
         ]
 
-        packet = (
-            IP(src=src_ip, dst=dst_ip)
-            / TCP(
-                sport=random.randint(49152, 65535),
-                dport=port,
-                flags="S",
-                options=tcp_options
-            )
+        packet = IP(src=src_ip, dst=dst_ip) / TCP(
+            sport=random.randint(49152, 65535), dport=port, flags="S", options=tcp_options
         )
         yield packet
 
-    def _generate_tcp_urgent_covert(
-        self, src_ip: str, dst_ip: str, port: int
-    ) -> Iterator[Packet]:
+    def _generate_tcp_urgent_covert(self, src_ip: str, dst_ip: str, port: int) -> Iterator[Packet]:
         """Generate TCP urgent pointer covert channel."""
         # Urgent pointer can encode 16 bits of data
         urgent_data = random.randint(0, 65535)
@@ -154,9 +148,8 @@ class ProtocolAbuseModule(TrafficModule):
         ]
 
         for ip_id in encoded_values:
-            packet = (
-                IP(src=src_ip, dst=dst_ip, id=ip_id)
-                / TCP(sport=random.randint(49152, 65535), dport=port, flags="S")
+            packet = IP(src=src_ip, dst=dst_ip, id=ip_id) / TCP(
+                sport=random.randint(49152, 65535), dport=port, flags="S"
             )
             yield packet
 
@@ -167,9 +160,8 @@ class ProtocolAbuseModule(TrafficModule):
         ttl_values = [ord(c) for c in message]
 
         for ttl in ttl_values:
-            packet = (
-                IP(src=src_ip, dst=dst_ip, ttl=ttl)
-                / TCP(sport=random.randint(49152, 65535), dport=port, flags="S")
+            packet = IP(src=src_ip, dst=dst_ip, ttl=ttl) / TCP(
+                sport=random.randint(49152, 65535), dport=port, flags="S"
             )
             yield packet
 
@@ -178,20 +170,15 @@ class ProtocolAbuseModule(TrafficModule):
     ) -> Iterator[Packet]:
         """Generate TCP reserved bits covert channel."""
         # Use reserved bits (historically unused)
-        packet = (
-            IP(src=src_ip, dst=dst_ip)
-            / TCP(
-                sport=random.randint(49152, 65535),
-                dport=port,
-                flags="S",
-                reserved=7,  # Set reserved bits
-            )
+        packet = IP(src=src_ip, dst=dst_ip) / TCP(
+            sport=random.randint(49152, 65535),
+            dport=port,
+            flags="S",
+            reserved=7,  # Set reserved bits
         )
         yield packet
 
-    def _generate_window_size_covert(
-        self, src_ip: str, dst_ip: str, port: int
-    ) -> Iterator[Packet]:
+    def _generate_window_size_covert(self, src_ip: str, dst_ip: str, port: int) -> Iterator[Packet]:
         """Generate TCP window size covert channel."""
         # Encode data in TCP window size
         encoded_values = [
@@ -201,14 +188,11 @@ class ProtocolAbuseModule(TrafficModule):
         ]
 
         for window in encoded_values:
-            packet = (
-                IP(src=src_ip, dst=dst_ip)
-                / TCP(
-                    sport=random.randint(49152, 65535),
-                    dport=port,
-                    flags="S",
-                    window=window,
-                )
+            packet = IP(src=src_ip, dst=dst_ip) / TCP(
+                sport=random.randint(49152, 65535),
+                dport=port,
+                flags="S",
+                window=window,
             )
             yield packet
 
@@ -250,4 +234,3 @@ class ProtocolAbuseModule(TrafficModule):
             yield from self._generate_reserved_bits_covert(src_ip, dst_ip, port)
         else:
             yield from self._generate_window_size_covert(src_ip, dst_ip, port)
-

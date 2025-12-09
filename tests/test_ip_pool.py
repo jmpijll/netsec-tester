@@ -119,4 +119,3 @@ class TestIPPool:
         """Test CIDR property returns original network."""
         pool = IPPool("10.0.0.0/24")
         assert pool.cidr == "10.0.0.0/24"
-

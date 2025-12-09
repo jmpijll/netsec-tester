@@ -53,9 +53,7 @@ class ArchiveEvasionModule(TrafficModule):
             ports=[80, 443, 8080],
         )
 
-    def _generate_nested_archive(
-        self, src_ip: str, dst_ip: str, port: int
-    ) -> Iterator[Packet]:
+    def _generate_nested_archive(self, src_ip: str, dst_ip: str, port: int) -> Iterator[Packet]:
         """Generate nested archive download pattern."""
         # Deeply nested archive filename
         nesting_patterns = [
@@ -82,9 +80,7 @@ class ArchiveEvasionModule(TrafficModule):
         )
         yield packet
 
-    def _generate_password_archive(
-        self, src_ip: str, dst_ip: str, port: int
-    ) -> Iterator[Packet]:
+    def _generate_password_archive(self, src_ip: str, dst_ip: str, port: int) -> Iterator[Packet]:
         """Generate password-protected archive download pattern."""
         ext = random.choice(ARCHIVE_EXTENSIONS)
         password_hint = random.choice(PASSWORD_INDICATORS)
@@ -113,9 +109,7 @@ class ArchiveEvasionModule(TrafficModule):
         )
         yield packet
 
-    def _generate_polyglot_file(
-        self, src_ip: str, dst_ip: str, port: int
-    ) -> Iterator[Packet]:
+    def _generate_polyglot_file(self, src_ip: str, dst_ip: str, port: int) -> Iterator[Packet]:
         """Generate polyglot file download pattern."""
         # Files that appear as multiple types
         polyglot_files = [
@@ -174,9 +168,7 @@ class ArchiveEvasionModule(TrafficModule):
         )
         yield packet
 
-    def _generate_iso_mount(
-        self, src_ip: str, dst_ip: str, port: int
-    ) -> Iterator[Packet]:
+    def _generate_iso_mount(self, src_ip: str, dst_ip: str, port: int) -> Iterator[Packet]:
         """Generate ISO/IMG download pattern (used to bypass MOTW)."""
         # ISO/IMG files bypass Mark of the Web
         iso_files = [
@@ -203,9 +195,7 @@ class ArchiveEvasionModule(TrafficModule):
         )
         yield packet
 
-    def _generate_double_extension(
-        self, src_ip: str, dst_ip: str, port: int
-    ) -> Iterator[Packet]:
+    def _generate_double_extension(self, src_ip: str, dst_ip: str, port: int) -> Iterator[Packet]:
         """Generate double extension archive pattern."""
         # Double extensions to hide real type
         double_ext_files = [
@@ -232,9 +222,7 @@ class ArchiveEvasionModule(TrafficModule):
         )
         yield packet
 
-    def _generate_rtlo_filename(
-        self, src_ip: str, dst_ip: str, port: int
-    ) -> Iterator[Packet]:
+    def _generate_rtlo_filename(self, src_ip: str, dst_ip: str, port: int) -> Iterator[Packet]:
         """Generate Right-to-Left Override filename pattern."""
         # RTLO character U+202E makes filename appear reversed
         # This simulates the URL-encoded version
@@ -328,4 +316,3 @@ class ArchiveEvasionModule(TrafficModule):
             yield from self._generate_rtlo_filename(src_ip, dst_ip, port)
         else:
             yield from self._generate_encrypted_container(src_ip, dst_ip, port)
-

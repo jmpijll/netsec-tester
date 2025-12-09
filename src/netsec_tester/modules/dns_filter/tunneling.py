@@ -117,8 +117,10 @@ class DNSTunnelingModule(TrafficModule):
             qtype = 28  # AAAA record
         else:
             # CNAME tunneling
-            qname = self._generate_high_entropy_subdomain(40) + "." + random.choice(
-                self._tunnel_domains
+            qname = (
+                self._generate_high_entropy_subdomain(40)
+                + "."
+                + random.choice(self._tunnel_domains)
             )
             qtype = 5  # CNAME record
 
@@ -136,8 +138,10 @@ class DNSTunnelingModule(TrafficModule):
 
         # Generate a burst of queries (tunneling tools send many queries)
         for _ in range(3):
-            qname = self._generate_high_entropy_subdomain(32) + "." + random.choice(
-                self._tunnel_domains
+            qname = (
+                self._generate_high_entropy_subdomain(32)
+                + "."
+                + random.choice(self._tunnel_domains)
             )
             packet = (
                 IP(src=src_ip, dst=dst_ip)
@@ -149,4 +153,3 @@ class DNSTunnelingModule(TrafficModule):
                 )
             )
             yield packet
-

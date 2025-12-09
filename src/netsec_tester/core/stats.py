@@ -177,9 +177,7 @@ class StatsDisplay:
         ip_table.add_column("IP Address", style="cyan")
         ip_table.add_column("Packets", justify="right", style="green")
 
-        sorted_ips = sorted(
-            snapshot.packets_per_ip.items(), key=lambda x: x[1], reverse=True
-        )[:10]
+        sorted_ips = sorted(snapshot.packets_per_ip.items(), key=lambda x: x[1], reverse=True)[:10]
         for ip, count in sorted_ips:
             ip_table.add_row(ip, f"{count:,}")
 
@@ -271,5 +269,3 @@ class StatsDisplay:
                 self.console.print(f"  {cat.upper()}: {count:,} ({pct:.1f}%)")
 
         self.console.print()
-
-

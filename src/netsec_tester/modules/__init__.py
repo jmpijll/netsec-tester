@@ -3,5 +3,3 @@
 from netsec_tester.modules.base import TrafficModule
 
 __all__ = ["TrafficModule"]
-
-

@@ -9,4 +9,3 @@ def reset_scapy_conf() -> None:
     from scapy.config import conf
 
     conf.verb = 0  # Suppress output
-

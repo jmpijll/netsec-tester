@@ -70,9 +70,7 @@ class GamingModule(TrafficModule):
             ports=[27015, 3074, 25565],
         )
 
-    def _generate_steam_api(
-        self, src_ip: str, dst_ip: str, port: int
-    ) -> Iterator[Packet]:
+    def _generate_steam_api(self, src_ip: str, dst_ip: str, port: int) -> Iterator[Packet]:
         """Generate Steam API request pattern."""
         steam_endpoints = [
             "/ISteamUser/GetPlayerSummaries/v2/",
@@ -101,7 +99,7 @@ class GamingModule(TrafficModule):
     def _generate_source_query(self, src_ip: str, dst_ip: str) -> Iterator[Packet]:
         """Generate Source Engine server query."""
         # A2S_INFO query: 0xFF 0xFF 0xFF 0xFF 'T' "Source Engine Query\0"
-        a2s_info = b"\xFF\xFF\xFF\xFFTSource Engine Query\x00"
+        a2s_info = b"\xff\xff\xff\xffTSource Engine Query\x00"
 
         port = random.choice(GAME_PORTS["source"])
 
@@ -116,24 +114,21 @@ class GamingModule(TrafficModule):
         """Generate Xbox Live traffic pattern."""
         # Xbox Live uses Teredo tunneling on port 3074
         # Generate UDP pattern
-        xbox_data = struct.pack(
-            ">IIHH",
-            random.randint(0, 0xFFFFFFFF),  # Session ID
-            random.randint(0, 0xFFFFFFFF),  # Sequence
-            0x0001,  # Message type
-            0x0000,  # Flags
-        ) + b"\x00" * 20
-
-        packet = (
-            IP(src=src_ip, dst=dst_ip)
-            / UDP(sport=3074, dport=3074)
-            / Raw(load=xbox_data)
+        xbox_data = (
+            struct.pack(
+                ">IIHH",
+                random.randint(0, 0xFFFFFFFF),  # Session ID
+                random.randint(0, 0xFFFFFFFF),  # Sequence
+                0x0001,  # Message type
+                0x0000,  # Flags
+            )
+            + b"\x00" * 20
         )
+
+        packet = IP(src=src_ip, dst=dst_ip) / UDP(sport=3074, dport=3074) / Raw(load=xbox_data)
         yield packet
 
-    def _generate_psn_traffic(
-        self, src_ip: str, dst_ip: str, port: int
-    ) -> Iterator[Packet]:
+    def _generate_psn_traffic(self, src_ip: str, dst_ip: str, port: int) -> Iterator[Packet]:
         """Generate PlayStation Network traffic pattern."""
         psn_endpoints = [
             "/trophy/v1/users/me/trophyTitles",
@@ -164,15 +159,25 @@ class GamingModule(TrafficModule):
         # VarInt packet ID (0x00) + Protocol version + Server address + Port + Next state
 
         # Server List Ping packet (simplified)
-        handshake = bytes([
-            0x10,  # Packet length
-            0x00,  # Packet ID (Handshake)
-            0xfd, 0x05,  # Protocol version (VarInt, 765 = 1.20.4)
-            0x09,  # Server address length
-        ]) + b"localhost" + bytes([
-            0x63, 0xDD,  # Port (25565)
-            0x01,  # Next state (1 = status)
-        ])
+        handshake = (
+            bytes(
+                [
+                    0x10,  # Packet length
+                    0x00,  # Packet ID (Handshake)
+                    0xFD,
+                    0x05,  # Protocol version (VarInt, 765 = 1.20.4)
+                    0x09,  # Server address length
+                ]
+            )
+            + b"localhost"
+            + bytes(
+                [
+                    0x63,
+                    0xDD,  # Port (25565)
+                    0x01,  # Next state (1 = status)
+                ]
+            )
+        )
 
         packet = (
             IP(src=src_ip, dst=dst_ip)
@@ -181,9 +186,7 @@ class GamingModule(TrafficModule):
         )
         yield packet
 
-    def _generate_epic_launcher(
-        self, src_ip: str, dst_ip: str, port: int
-    ) -> Iterator[Packet]:
+    def _generate_epic_launcher(self, src_ip: str, dst_ip: str, port: int) -> Iterator[Packet]:
         """Generate Epic Games Launcher traffic pattern."""
         epic_endpoints = [
             "/account/api/oauth/token",
@@ -208,9 +211,7 @@ class GamingModule(TrafficModule):
         )
         yield packet
 
-    def _generate_battlenet(
-        self, src_ip: str, dst_ip: str, port: int
-    ) -> Iterator[Packet]:
+    def _generate_battlenet(self, src_ip: str, dst_ip: str, port: int) -> Iterator[Packet]:
         """Generate Battle.net traffic pattern."""
         bnet_endpoints = [
             "/wow/user/characters",
@@ -260,9 +261,7 @@ class GamingModule(TrafficModule):
         )
         yield packet
 
-    def _generate_game_update(
-        self, src_ip: str, dst_ip: str, port: int
-    ) -> Iterator[Packet]:
+    def _generate_game_update(self, src_ip: str, dst_ip: str, port: int) -> Iterator[Packet]:
         """Generate game update/patch download pattern."""
         # CDN requests for game updates
         cdns = [
@@ -328,4 +327,3 @@ class GamingModule(TrafficModule):
             yield from self._generate_voice_chat(src_ip, dst_ip)
         else:
             yield from self._generate_game_update(src_ip, dst_ip, port)
-

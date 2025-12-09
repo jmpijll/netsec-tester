@@ -63,9 +63,7 @@ class CloudServicesModule(TrafficModule):
             ports=[443, 80],
         )
 
-    def _generate_aws_s3(
-        self, src_ip: str, dst_ip: str, port: int
-    ) -> Iterator[Packet]:
+    def _generate_aws_s3(self, src_ip: str, dst_ip: str, port: int) -> Iterator[Packet]:
         """Generate AWS S3 API request."""
         bucket = f"my-bucket-{random.randint(1000, 9999)}"
         key = f"data/file-{random.randint(100, 999)}.json"
@@ -87,9 +85,7 @@ class CloudServicesModule(TrafficModule):
         )
         yield packet
 
-    def _generate_aws_ec2(
-        self, src_ip: str, dst_ip: str, port: int
-    ) -> Iterator[Packet]:
+    def _generate_aws_ec2(self, src_ip: str, dst_ip: str, port: int) -> Iterator[Packet]:
         """Generate AWS EC2 API request."""
         actions = [
             "DescribeInstances",
@@ -118,9 +114,7 @@ class CloudServicesModule(TrafficModule):
         )
         yield packet
 
-    def _generate_azure_blob(
-        self, src_ip: str, dst_ip: str, port: int
-    ) -> Iterator[Packet]:
+    def _generate_azure_blob(self, src_ip: str, dst_ip: str, port: int) -> Iterator[Packet]:
         """Generate Azure Blob Storage request."""
         account = f"storageaccount{random.randint(100, 999)}"
         container = "mycontainer"
@@ -143,9 +137,7 @@ class CloudServicesModule(TrafficModule):
         )
         yield packet
 
-    def _generate_azure_management(
-        self, src_ip: str, dst_ip: str, port: int
-    ) -> Iterator[Packet]:
+    def _generate_azure_management(self, src_ip: str, dst_ip: str, port: int) -> Iterator[Packet]:
         """Generate Azure Management API request."""
         subscription = f"sub-{random.randint(10000, 99999)}"
 
@@ -165,9 +157,7 @@ class CloudServicesModule(TrafficModule):
         )
         yield packet
 
-    def _generate_gcp_storage(
-        self, src_ip: str, dst_ip: str, port: int
-    ) -> Iterator[Packet]:
+    def _generate_gcp_storage(self, src_ip: str, dst_ip: str, port: int) -> Iterator[Packet]:
         """Generate GCP Cloud Storage request."""
         bucket = f"my-gcp-bucket-{random.randint(1000, 9999)}"
         obj = f"data/object-{random.randint(100, 999)}.json"
@@ -187,9 +177,7 @@ class CloudServicesModule(TrafficModule):
         )
         yield packet
 
-    def _generate_office365(
-        self, src_ip: str, dst_ip: str, port: int
-    ) -> Iterator[Packet]:
+    def _generate_office365(self, src_ip: str, dst_ip: str, port: int) -> Iterator[Packet]:
         """Generate Office 365 API request."""
         endpoints = [
             "/v1.0/me/messages",
@@ -215,9 +203,7 @@ class CloudServicesModule(TrafficModule):
         )
         yield packet
 
-    def _generate_salesforce(
-        self, src_ip: str, dst_ip: str, port: int
-    ) -> Iterator[Packet]:
+    def _generate_salesforce(self, src_ip: str, dst_ip: str, port: int) -> Iterator[Packet]:
         """Generate Salesforce API request."""
         endpoints = [
             "/services/data/v58.0/sobjects/Account",
@@ -243,9 +229,7 @@ class CloudServicesModule(TrafficModule):
         )
         yield packet
 
-    def _generate_dropbox(
-        self, src_ip: str, dst_ip: str, port: int
-    ) -> Iterator[Packet]:
+    def _generate_dropbox(self, src_ip: str, dst_ip: str, port: int) -> Iterator[Packet]:
         """Generate Dropbox API request."""
         http_request = (
             "POST /2/files/list_folder HTTP/1.1\r\n"
@@ -302,4 +286,3 @@ class CloudServicesModule(TrafficModule):
             yield from self._generate_salesforce(src_ip, dst_ip, port)
         else:
             yield from self._generate_dropbox(src_ip, dst_ip, port)
-

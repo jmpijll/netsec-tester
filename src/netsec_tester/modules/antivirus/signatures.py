@@ -166,4 +166,3 @@ class AVSignaturesModule(TrafficModule):
         )
 
         yield packet
-

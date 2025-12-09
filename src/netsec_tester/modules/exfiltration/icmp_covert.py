@@ -35,7 +35,7 @@ class ICMPCovertModule(TrafficModule):
     def _generate_data_in_payload(self, src_ip: str, dst_ip: str) -> Iterator[Packet]:
         """Generate ICMP with encoded data in payload."""
         # Simulate exfiltrated data
-        fake_data = ''.join(random.choices(string.ascii_letters + string.digits, k=64))
+        fake_data = "".join(random.choices(string.ascii_letters + string.digits, k=64))
         encoded_data = base64.b64encode(fake_data.encode())
 
         packet = (
@@ -64,7 +64,7 @@ class ICMPCovertModule(TrafficModule):
 
         for i in range(5):
             # Data chunks in sequence
-            chunk_data = f"CHUNK{i:03d}:" + ''.join(random.choices(string.hexdigits, k=32))
+            chunk_data = f"CHUNK{i:03d}:" + "".join(random.choices(string.hexdigits, k=32))
 
             packet = (
                 IP(src=src_ip, dst=dst_ip)
@@ -153,4 +153,3 @@ class ICMPCovertModule(TrafficModule):
             yield from self._generate_hex_encoded_payload(src_ip, dst_ip)
         else:
             yield from self._generate_rapid_pings(src_ip, dst_ip)
-

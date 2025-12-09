@@ -192,7 +192,9 @@ class C2BeaconModule(TrafficModule):
         if method == "POST":
             if pattern.get("encoded_param"):
                 # Encoded beacon data in POST body
-                beacon_data = f"id={random.randint(1, 1000)}&data={self._generate_random_string(32)}"
+                beacon_data = (
+                    f"id={random.randint(1, 1000)}&data={self._generate_random_string(32)}"
+                )
                 body = base64.b64encode(beacon_data.encode()).decode()
             else:
                 body = f"status=ok&id={self._beacon_count}"
@@ -250,4 +252,3 @@ class C2BeaconModule(TrafficModule):
         )
 
         yield packet
-

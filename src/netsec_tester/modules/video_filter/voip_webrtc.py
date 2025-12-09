@@ -38,9 +38,7 @@ class VoIPWebRTCModule(TrafficModule):
             ports=[5060, 5061, 3478, 19302],
         )
 
-    def _generate_sip_invite(
-        self, src_ip: str, dst_ip: str, port: int
-    ) -> Iterator[Packet]:
+    def _generate_sip_invite(self, src_ip: str, dst_ip: str, port: int) -> Iterator[Packet]:
         """Generate SIP INVITE request."""
         call_id = f"{random.randint(100000, 999999)}@{src_ip}"
         from_tag = f"{random.randint(1000, 9999)}"
@@ -67,9 +65,7 @@ class VoIPWebRTCModule(TrafficModule):
         )
         yield packet
 
-    def _generate_sip_register(
-        self, src_ip: str, dst_ip: str, port: int
-    ) -> Iterator[Packet]:
+    def _generate_sip_register(self, src_ip: str, dst_ip: str, port: int) -> Iterator[Packet]:
         """Generate SIP REGISTER request."""
         call_id = f"{random.randint(100000, 999999)}@{src_ip}"
         branch = f"z9hG4bK{random.randint(100000, 999999)}"
@@ -105,14 +101,7 @@ class VoIPWebRTCModule(TrafficModule):
         timestamp = random.randint(0, 0xFFFFFFFF)
         ssrc = random.randint(0, 0xFFFFFFFF)
 
-        rtp_header = struct.pack(
-            ">BBHII",
-            version,
-            payload_type,
-            sequence,
-            timestamp,
-            ssrc
-        )
+        rtp_header = struct.pack(">BBHII", version, payload_type, sequence, timestamp, ssrc)
 
         # Add some fake audio payload
         payload = bytes(random.randint(0, 255) for _ in range(160))
@@ -134,12 +123,9 @@ class VoIPWebRTCModule(TrafficModule):
         magic_cookie = STUN_MAGIC_COOKIE
         transaction_id = bytes(random.randint(0, 255) for _ in range(12))
 
-        stun_header = struct.pack(
-            ">HHI",
-            message_type,
-            message_length,
-            magic_cookie
-        ) + transaction_id
+        stun_header = (
+            struct.pack(">HHI", message_type, message_length, magic_cookie) + transaction_id
+        )
 
         # Common STUN ports
         stun_port = random.choice([3478, 19302, 5349])
@@ -163,12 +149,9 @@ class VoIPWebRTCModule(TrafficModule):
         transport = 17  # UDP
         attr = struct.pack(">HHI", attr_type, attr_length, transport << 24)
 
-        stun_header = struct.pack(
-            ">HHI",
-            message_type,
-            len(attr),
-            STUN_MAGIC_COOKIE
-        ) + transaction_id + attr
+        stun_header = (
+            struct.pack(">HHI", message_type, len(attr), STUN_MAGIC_COOKIE) + transaction_id + attr
+        )
 
         packet = (
             IP(src=src_ip, dst=dst_ip)
@@ -177,9 +160,7 @@ class VoIPWebRTCModule(TrafficModule):
         )
         yield packet
 
-    def _generate_webrtc_ice(
-        self, src_ip: str, dst_ip: str, port: int
-    ) -> Iterator[Packet]:
+    def _generate_webrtc_ice(self, src_ip: str, dst_ip: str, port: int) -> Iterator[Packet]:
         """Generate WebRTC ICE candidate exchange (simulated via HTTP)."""
         # SDP offer with ICE candidates
         sdp_offer = {
@@ -193,10 +174,11 @@ class VoIPWebRTCModule(TrafficModule):
                 f"a=ice-pwd:{random.randint(10000000, 99999999)}\r\n"
                 f"m=audio 9 UDP/TLS/RTP/SAVPF 111\r\n"
                 f"c=IN IP4 0.0.0.0\r\n"
-            )
+            ),
         }
 
         import json
+
         body = json.dumps(sdp_offer)
 
         http_request = (
@@ -219,12 +201,18 @@ class VoIPWebRTCModule(TrafficModule):
         """Generate H.323 Setup message pattern."""
         # H.225.0 Q.931 Setup message (simplified)
         # Protocol discriminator + call reference + message type
-        setup_msg = bytes([
-            0x08,  # Protocol discriminator (Q.931)
-            0x02,  # Call reference length
-            0x00, 0x01,  # Call reference value
-            0x05,  # Setup message type
-        ]) + b"\x00" * 20  # Padding
+        setup_msg = (
+            bytes(
+                [
+                    0x08,  # Protocol discriminator (Q.931)
+                    0x02,  # Call reference length
+                    0x00,
+                    0x01,  # Call reference value
+                    0x05,  # Setup message type
+                ]
+            )
+            + b"\x00" * 20
+        )  # Padding
 
         packet = (
             IP(src=src_ip, dst=dst_ip)
@@ -233,9 +221,7 @@ class VoIPWebRTCModule(TrafficModule):
         )
         yield packet
 
-    def _generate_teams_traffic(
-        self, src_ip: str, dst_ip: str, port: int
-    ) -> Iterator[Packet]:
+    def _generate_teams_traffic(self, src_ip: str, dst_ip: str, port: int) -> Iterator[Packet]:
         """Generate Microsoft Teams-like traffic pattern."""
         # Teams API call pattern
         teams_endpoints = [
@@ -300,4 +286,3 @@ class VoIPWebRTCModule(TrafficModule):
             yield from self._generate_h323_setup(src_ip, dst_ip)
         else:
             yield from self._generate_teams_traffic(src_ip, dst_ip, 443)
-

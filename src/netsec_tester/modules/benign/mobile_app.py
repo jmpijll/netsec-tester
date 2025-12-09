@@ -53,9 +53,7 @@ class MobileAppModule(TrafficModule):
             ports=[443, 80],
         )
 
-    def _generate_app_store_request(
-        self, src_ip: str, dst_ip: str, port: int
-    ) -> Iterator[Packet]:
+    def _generate_app_store_request(self, src_ip: str, dst_ip: str, port: int) -> Iterator[Packet]:
         """Generate app store API request."""
         store = random.choice(["apple", "google"])
         host = random.choice(APP_STORES[store])
@@ -82,9 +80,7 @@ class MobileAppModule(TrafficModule):
         )
         yield packet
 
-    def _generate_push_notification(
-        self, src_ip: str, dst_ip: str, port: int
-    ) -> Iterator[Packet]:
+    def _generate_push_notification(self, src_ip: str, dst_ip: str, port: int) -> Iterator[Packet]:
         """Generate push notification service request."""
         service = random.choice(list(PUSH_SERVICES.keys()))
         host = PUSH_SERVICES[service]
@@ -97,10 +93,12 @@ class MobileAppModule(TrafficModule):
         else:
             # FCM request
             path = "/fcm/send"
-            body = json.dumps({
-                "to": f"device_token_{random.randint(1000, 9999)}",
-                "notification": {"title": "Test", "body": "Message"}
-            })
+            body = json.dumps(
+                {
+                    "to": f"device_token_{random.randint(1000, 9999)}",
+                    "notification": {"title": "Test", "body": "Message"},
+                }
+            )
 
         http_request = (
             f"POST {path} HTTP/1.1\r\n"
@@ -119,9 +117,7 @@ class MobileAppModule(TrafficModule):
         )
         yield packet
 
-    def _generate_analytics(
-        self, src_ip: str, dst_ip: str, port: int
-    ) -> Iterator[Packet]:
+    def _generate_analytics(self, src_ip: str, dst_ip: str, port: int) -> Iterator[Packet]:
         """Generate mobile analytics traffic."""
         analytics_endpoints = [
             ("www.google-analytics.com", "/collect"),
@@ -137,7 +133,7 @@ class MobileAppModule(TrafficModule):
             "event": random.choice(["app_open", "screen_view", "purchase", "login"]),
             "app_version": "1.0.0",
             "device_id": f"device-{random.randint(100000, 999999)}",
-            "timestamp": "2023-12-15T12:00:00Z"
+            "timestamp": "2023-12-15T12:00:00Z",
         }
 
         body = json.dumps(analytics_data)
@@ -159,9 +155,7 @@ class MobileAppModule(TrafficModule):
         )
         yield packet
 
-    def _generate_crash_report(
-        self, src_ip: str, dst_ip: str, port: int
-    ) -> Iterator[Packet]:
+    def _generate_crash_report(self, src_ip: str, dst_ip: str, port: int) -> Iterator[Packet]:
         """Generate crash reporting service traffic."""
         crash_services = [
             "firebase-crashlytics.googleapis.com",
@@ -176,7 +170,7 @@ class MobileAppModule(TrafficModule):
             "app_id": f"com.app.example.{random.randint(1000, 9999)}",
             "version": "1.0.0",
             "crash_id": f"crash-{random.randint(100000, 999999)}",
-            "platform": random.choice(["iOS", "Android"])
+            "platform": random.choice(["iOS", "Android"]),
         }
 
         body = json.dumps(crash_data)
@@ -198,9 +192,7 @@ class MobileAppModule(TrafficModule):
         )
         yield packet
 
-    def _generate_app_update_check(
-        self, src_ip: str, dst_ip: str, port: int
-    ) -> Iterator[Packet]:
+    def _generate_app_update_check(self, src_ip: str, dst_ip: str, port: int) -> Iterator[Packet]:
         """Generate app update check request."""
         http_request = (
             "GET /api/v1/version/check?app_id=com.myapp&current_version=1.0.0 HTTP/1.1\r\n"
@@ -217,9 +209,7 @@ class MobileAppModule(TrafficModule):
         )
         yield packet
 
-    def _generate_social_sdk(
-        self, src_ip: str, dst_ip: str, port: int
-    ) -> Iterator[Packet]:
+    def _generate_social_sdk(self, src_ip: str, dst_ip: str, port: int) -> Iterator[Packet]:
         """Generate social SDK traffic (Facebook, Twitter, etc.)."""
         social_hosts = [
             "graph.facebook.com",
@@ -245,15 +235,10 @@ class MobileAppModule(TrafficModule):
         )
         yield packet
 
-    def _generate_in_app_purchase(
-        self, src_ip: str, dst_ip: str, port: int
-    ) -> Iterator[Packet]:
+    def _generate_in_app_purchase(self, src_ip: str, dst_ip: str, port: int) -> Iterator[Packet]:
         """Generate in-app purchase verification request."""
         # Apple receipt verification style
-        receipt_data = {
-            "receipt-data": "MIITtQYJKoZIhvcNAQcCoII...",
-            "password": "shared_secret"
-        }
+        receipt_data = {"receipt-data": "MIITtQYJKoZIhvcNAQcCoII...", "password": "shared_secret"}
 
         body = json.dumps(receipt_data)
 
@@ -310,4 +295,3 @@ class MobileAppModule(TrafficModule):
             yield from self._generate_social_sdk(src_ip, dst_ip, port)
         else:
             yield from self._generate_in_app_purchase(src_ip, dst_ip, port)
-

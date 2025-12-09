@@ -67,5 +67,3 @@ class Scenario:
             List of module names from config
         """
         return self.config.modules.copy()
-
-

@@ -35,15 +35,12 @@ class DoSPatternsModule(TrafficModule):
         """Generate SYN flood attack packets."""
         # Multiple SYN packets with random source ports
         for _ in range(5):
-            packet = (
-                IP(src=src_ip, dst=dst_ip)
-                / TCP(
-                    sport=random.randint(1024, 65535),
-                    dport=port,
-                    flags="S",
-                    seq=random.randint(0, 4294967295),
-                    window=64240,
-                )
+            packet = IP(src=src_ip, dst=dst_ip) / TCP(
+                sport=random.randint(1024, 65535),
+                dport=port,
+                flags="S",
+                seq=random.randint(0, 4294967295),
+                window=64240,
             )
             yield packet
 
@@ -78,11 +75,7 @@ class DoSPatternsModule(TrafficModule):
         # ICMP echo to broadcast address pattern
         # Using .255 as broadcast indicator
         broadcast_ip = ".".join(dst_ip.split(".")[:3]) + ".255"
-        packet = (
-            IP(src=src_ip, dst=broadcast_ip)
-            / ICMP(type=8, code=0)
-            / Raw(load=b"X" * 64)
-        )
+        packet = IP(src=src_ip, dst=broadcast_ip) / ICMP(type=8, code=0) / Raw(load=b"X" * 64)
         yield packet
 
     def _generate_slowloris(self, src_ip: str, dst_ip: str, port: int) -> Iterator[Packet]:
@@ -174,7 +167,7 @@ class DoSPatternsModule(TrafficModule):
     def _generate_ntp_amplification(self, src_ip: str, dst_ip: str) -> Iterator[Packet]:
         """Generate NTP amplification attack patterns."""
         # NTP monlist command (CVE-2013-5211)
-        ntp_monlist = bytes([0x17, 0x00, 0x03, 0x2a]) + b"\x00" * 4
+        ntp_monlist = bytes([0x17, 0x00, 0x03, 0x2A]) + b"\x00" * 4
         packet = (
             IP(src=src_ip, dst=dst_ip)
             / UDP(sport=random.randint(49152, 65535), dport=123)
@@ -242,4 +235,3 @@ class DoSPatternsModule(TrafficModule):
             yield from self._generate_ntp_amplification(src_ip, dst_ip)
         else:
             yield from self._generate_ssdp_amplification(src_ip, dst_ip)
-

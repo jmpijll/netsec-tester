@@ -17,19 +17,16 @@ SUSPICIOUS_URL_PATTERNS = [
     "/update/patch.exe",
     "/driver/update.exe",
     "/software/crack.exe",
-
     # Script downloads
     "/scripts/payload.ps1",
     "/tools/script.vbs",
     "/batch/autorun.bat",
     "/macro/document.docm",
-
     # Archive with suspicious names
     "/files/invoice_pdf.zip",
     "/download/document.rar",
     "/attachment/urgent.7z",
     "/files/password_protected.zip",
-
     # Paths with suspicious keywords
     "/admin/config.php",
     "/wp-admin/admin-ajax.php",
@@ -37,35 +34,29 @@ SUSPICIOUS_URL_PATTERNS = [
     "/.git/config",
     "/.env",
     "/backup/database.sql",
-
     # URL shortener patterns
     "/r/abc123",
     "/go/xyz789",
     "/l/shortlink",
-
     # Redirect chains
     "/redirect?url=http://evil.com",
     "/redir?to=http://malware.com/payload",
     "/out?link=http://phishing.com",
-
     # Encoded suspicious content
     "/page?q=%3Cscript%3E",
     "/search?term=%27%20OR%20%271",
     "/api?cmd=..%2F..%2Fetc%2Fpasswd",
-
     # Cryptocurrency-related suspicious paths
     "/wallet/connect",
     "/eth/claim",
     "/btc/giveaway",
     "/airdrop/register",
-
     # Tech support scam patterns
     "/support/virus-detected",
     "/alert/security-warning",
     "/microsoft/activate",
-
-    # Suspicious file paths
-    "/tmp/shell.php",
+    # Suspicious file paths (test payloads)
+    "/tmp/shell.php",  # nosec B108 - test payload string, not temp file usage
     "/uploads/backdoor.php",
     "/images/../../etc/passwd",
     "/static/webshell.jsp",
@@ -129,9 +120,7 @@ class URLPatternsModule(TrafficModule):
 
         if pattern_type == 0:
             # Use predefined suspicious path
-            path = SUSPICIOUS_URL_PATTERNS[
-                self._request_count % len(SUSPICIOUS_URL_PATTERNS)
-            ]
+            path = SUSPICIOUS_URL_PATTERNS[self._request_count % len(SUSPICIOUS_URL_PATTERNS)]
         elif pattern_type == 1:
             # Add suspicious query parameters to normal path
             param_name, param_value = random.choice(SUSPICIOUS_PARAMS)
@@ -190,4 +179,3 @@ class URLPatternsModule(TrafficModule):
             )
 
             yield packet
-

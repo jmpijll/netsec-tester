@@ -66,9 +66,7 @@ class DeserializationModule(TrafficModule):
             ports=[80, 443, 8080, 8443, 1099],
         )
 
-    def _generate_java_serial_attack(
-        self, src_ip: str, dst_ip: str, port: int
-    ) -> Iterator[Packet]:
+    def _generate_java_serial_attack(self, src_ip: str, dst_ip: str, port: int) -> Iterator[Packet]:
         """Generate Java deserialization attack patterns."""
         # Create a mock serialized object with gadget class name
         gadget_class = random.choice(JAVA_GADGET_CLASSES)
@@ -129,14 +127,13 @@ class DeserializationModule(TrafficModule):
         )
         yield packet
 
-    def _generate_php_serial_attack(
-        self, src_ip: str, dst_ip: str, port: int
-    ) -> Iterator[Packet]:
+    def _generate_php_serial_attack(self, src_ip: str, dst_ip: str, port: int) -> Iterator[Packet]:
         """Generate PHP object injection patterns."""
         payload = random.choice(PHP_SERIAL_PAYLOADS)
 
         # URL encode for parameter
         import urllib.parse
+
         encoded_payload = urllib.parse.quote(payload)
 
         # Via GET parameter (common in PHP apps)
@@ -154,9 +151,7 @@ class DeserializationModule(TrafficModule):
         )
         yield packet
 
-    def _generate_php_phar_attack(
-        self, src_ip: str, dst_ip: str, port: int
-    ) -> Iterator[Packet]:
+    def _generate_php_phar_attack(self, src_ip: str, dst_ip: str, port: int) -> Iterator[Packet]:
         """Generate PHP Phar deserialization patterns."""
         # Phar wrapper attack via file operations
         phar_paths = [
@@ -167,6 +162,7 @@ class DeserializationModule(TrafficModule):
         ]
 
         import urllib.parse
+
         path = urllib.parse.quote(random.choice(phar_paths))
 
         http_request = (
@@ -241,9 +237,7 @@ class DeserializationModule(TrafficModule):
         )
         yield packet
 
-    def _generate_json_deser_attack(
-        self, src_ip: str, dst_ip: str, port: int
-    ) -> Iterator[Packet]:
+    def _generate_json_deser_attack(self, src_ip: str, dst_ip: str, port: int) -> Iterator[Packet]:
         """Generate JSON deserialization patterns (Jackson, Fastjson)."""
         # Jackson polymorphic deserialization
         json_payloads = [
@@ -308,4 +302,3 @@ class DeserializationModule(TrafficModule):
             yield from self._generate_python_pickle_attack(src_ip, dst_ip, port)
         else:
             yield from self._generate_json_deser_attack(src_ip, dst_ip, port)
-

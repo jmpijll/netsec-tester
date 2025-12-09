@@ -42,11 +42,11 @@ BLOCKED_SNI_DOMAINS = {
 # Real JA3 is MD5 of: SSLVersion,Ciphers,Extensions,EllipticCurves,EllipticCurvePointFormats
 JA3_SUSPICIOUS_PATTERNS = [
     # Tor browser pattern indicators
-    {"version": 0x0303, "ciphers": [0xc02c, 0xc02b, 0x009f, 0x009e]},
+    {"version": 0x0303, "ciphers": [0xC02C, 0xC02B, 0x009F, 0x009E]},
     # Malware-like patterns (limited cipher suites)
-    {"version": 0x0301, "ciphers": [0x002f, 0x0035]},
+    {"version": 0x0301, "ciphers": [0x002F, 0x0035]},
     # Old/vulnerable patterns
-    {"version": 0x0300, "ciphers": [0x000a, 0x0009]},
+    {"version": 0x0300, "ciphers": [0x000A, 0x0009]},
 ]
 
 
@@ -75,7 +75,7 @@ class TLSInspectionModule(TrafficModule):
         """Build a TLS Client Hello packet with SNI."""
         # Use default pattern if not specified
         if ja3_pattern is None:
-            ja3_pattern = {"version": 0x0303, "ciphers": [0xc02f, 0xc030, 0x009e, 0x009f]}
+            ja3_pattern = {"version": 0x0303, "ciphers": [0xC02F, 0xC030, 0x009E, 0x009F]}
 
         # SNI extension
         sni_bytes = sni.encode()
@@ -98,7 +98,7 @@ class TLSInspectionModule(TrafficModule):
         # Extensions (SNI + some others)
         extensions = sni_ext
         # Add supported versions extension
-        extensions += struct.pack(">HHB", 0x002b, 3, 2) + struct.pack(">H", 0x0303)
+        extensions += struct.pack(">HHB", 0x002B, 3, 2) + struct.pack(">H", 0x0303)
 
         extensions_section = struct.pack(">H", len(extensions)) + extensions
 
@@ -129,9 +129,7 @@ class TLSInspectionModule(TrafficModule):
 
         return record
 
-    def _generate_blocked_sni(
-        self, src_ip: str, dst_ip: str, port: int
-    ) -> Iterator[Packet]:
+    def _generate_blocked_sni(self, src_ip: str, dst_ip: str, port: int) -> Iterator[Packet]:
         """Generate TLS Client Hello with blocked category SNI."""
         category = random.choice(list(BLOCKED_SNI_DOMAINS.keys()))
         sni = random.choice(BLOCKED_SNI_DOMAINS[category])
@@ -145,9 +143,7 @@ class TLSInspectionModule(TrafficModule):
         )
         yield packet
 
-    def _generate_suspicious_ja3(
-        self, src_ip: str, dst_ip: str, port: int
-    ) -> Iterator[Packet]:
+    def _generate_suspicious_ja3(self, src_ip: str, dst_ip: str, port: int) -> Iterator[Packet]:
         """Generate TLS Client Hello with suspicious JA3 fingerprint."""
         ja3_pattern = random.choice(JA3_SUSPICIOUS_PATTERNS)
         sni = "legitimate-looking.com"
@@ -161,9 +157,7 @@ class TLSInspectionModule(TrafficModule):
         )
         yield packet
 
-    def _generate_cert_anomaly(
-        self, src_ip: str, dst_ip: str, port: int
-    ) -> Iterator[Packet]:
+    def _generate_cert_anomaly(self, src_ip: str, dst_ip: str, port: int) -> Iterator[Packet]:
         """Generate TLS handshake suggesting certificate anomalies."""
         # SNI mismatch indicator (different port than expected)
         sni = "www.google.com"  # Legit SNI to non-Google IP
@@ -177,14 +171,12 @@ class TLSInspectionModule(TrafficModule):
         )
         yield packet
 
-    def _generate_tls_downgrade(
-        self, src_ip: str, dst_ip: str, port: int
-    ) -> Iterator[Packet]:
+    def _generate_tls_downgrade(self, src_ip: str, dst_ip: str, port: int) -> Iterator[Packet]:
         """Generate TLS downgrade attack patterns."""
         # Old TLS/SSL versions
         old_versions = [
-            {"version": 0x0300, "ciphers": [0x000a, 0x002f]},  # SSL 3.0
-            {"version": 0x0301, "ciphers": [0x002f, 0x0035]},  # TLS 1.0
+            {"version": 0x0300, "ciphers": [0x000A, 0x002F]},  # SSL 3.0
+            {"version": 0x0301, "ciphers": [0x002F, 0x0035]},  # TLS 1.0
         ]
 
         ja3_pattern = random.choice(old_versions)
@@ -199,9 +191,7 @@ class TLSInspectionModule(TrafficModule):
         )
         yield packet
 
-    def _generate_esni_pattern(
-        self, src_ip: str, dst_ip: str, port: int
-    ) -> Iterator[Packet]:
+    def _generate_esni_pattern(self, src_ip: str, dst_ip: str, port: int) -> Iterator[Packet]:
         """Generate Encrypted SNI / ECH patterns."""
         # ESNI/ECH uses empty or encrypted SNI extension
         # Build custom Client Hello with ESNI extension
@@ -209,12 +199,13 @@ class TLSInspectionModule(TrafficModule):
             struct.pack(">H", 0x0303)  # Version
             + bytes(32)  # Random
             + b"\x00"  # Session ID length
-            + struct.pack(">H", 4) + struct.pack(">HH", 0xc02f, 0xc030)  # Ciphers
+            + struct.pack(">H", 4)
+            + struct.pack(">HH", 0xC02F, 0xC030)  # Ciphers
             + b"\x01\x00"  # Compression
         )
 
         # ESNI extension (0xffce) or ECH (0xfe0d)
-        esni_ext = struct.pack(">HH", 0xffce, 32) + bytes(32)  # Fake ESNI data
+        esni_ext = struct.pack(">HH", 0xFFCE, 32) + bytes(32)  # Fake ESNI data
 
         extensions = esni_ext
         client_hello_data += struct.pack(">H", len(extensions)) + extensions
@@ -297,4 +288,3 @@ class TLSInspectionModule(TrafficModule):
             yield from self._generate_esni_pattern(src_ip, dst_ip, port)
         else:
             yield from self._generate_self_signed_indicator(src_ip, dst_ip, port)
-

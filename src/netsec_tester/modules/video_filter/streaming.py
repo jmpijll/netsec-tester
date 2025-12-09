@@ -229,4 +229,3 @@ class StreamingModule(TrafficModule):
         )
 
         yield packet
-

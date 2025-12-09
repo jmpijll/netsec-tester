@@ -30,9 +30,7 @@ class HTTPSmugglingModule(TrafficModule):
             ports=[80, 443, 8080],
         )
 
-    def _generate_cl_te_basic(
-        self, src_ip: str, dst_ip: str, port: int
-    ) -> Iterator[Packet]:
+    def _generate_cl_te_basic(self, src_ip: str, dst_ip: str, port: int) -> Iterator[Packet]:
         """Generate CL.TE smuggling attack (Content-Length vs Transfer-Encoding)."""
         # Frontend uses Content-Length, backend uses Transfer-Encoding
         smuggled_request = (
@@ -54,9 +52,7 @@ class HTTPSmugglingModule(TrafficModule):
         )
         yield packet
 
-    def _generate_te_cl_basic(
-        self, src_ip: str, dst_ip: str, port: int
-    ) -> Iterator[Packet]:
+    def _generate_te_cl_basic(self, src_ip: str, dst_ip: str, port: int) -> Iterator[Packet]:
         """Generate TE.CL smuggling attack (Transfer-Encoding vs Content-Length)."""
         # Frontend uses Transfer-Encoding, backend uses Content-Length
         smuggled_body = "GET /admin HTTP/1.1\r\nHost: localhost\r\n\r\n"
@@ -80,9 +76,7 @@ class HTTPSmugglingModule(TrafficModule):
         )
         yield packet
 
-    def _generate_te_te_obfuscation(
-        self, src_ip: str, dst_ip: str, port: int
-    ) -> Iterator[Packet]:
+    def _generate_te_te_obfuscation(self, src_ip: str, dst_ip: str, port: int) -> Iterator[Packet]:
         """Generate TE.TE smuggling with obfuscated Transfer-Encoding."""
         # Various ways to obfuscate Transfer-Encoding header
         te_obfuscations = [
@@ -143,9 +137,7 @@ class HTTPSmugglingModule(TrafficModule):
         )
         yield packet
 
-    def _generate_http2_downgrade(
-        self, src_ip: str, dst_ip: str, port: int
-    ) -> Iterator[Packet]:
+    def _generate_http2_downgrade(self, src_ip: str, dst_ip: str, port: int) -> Iterator[Packet]:
         """Generate HTTP/2 to HTTP/1.1 downgrade patterns."""
         # H2C upgrade with smuggled content
         smuggled_request = (
@@ -165,9 +157,7 @@ class HTTPSmugglingModule(TrafficModule):
         )
         yield packet
 
-    def _generate_header_injection(
-        self, src_ip: str, dst_ip: str, port: int
-    ) -> Iterator[Packet]:
+    def _generate_header_injection(self, src_ip: str, dst_ip: str, port: int) -> Iterator[Packet]:
         """Generate CRLF injection for header smuggling."""
         # CRLF in header value to inject additional headers
         injected_headers = [
@@ -179,10 +169,7 @@ class HTTPSmugglingModule(TrafficModule):
         injection = random.choice(injected_headers)
 
         smuggled_request = (
-            f"GET / HTTP/1.1\r\n"
-            f"Host: {dst_ip}\r\n"
-            f"X-Custom: {injection}\r\n"
-            f"\r\n"
+            f"GET / HTTP/1.1\r\n" f"Host: {dst_ip}\r\n" f"X-Custom: {injection}\r\n" f"\r\n"
         )
 
         packet = (
@@ -218,9 +205,7 @@ class HTTPSmugglingModule(TrafficModule):
         )
         yield packet
 
-    def _generate_pipeline_injection(
-        self, src_ip: str, dst_ip: str, port: int
-    ) -> Iterator[Packet]:
+    def _generate_pipeline_injection(self, src_ip: str, dst_ip: str, port: int) -> Iterator[Packet]:
         """Generate HTTP pipeline injection patterns."""
         # Multiple requests in single packet
         smuggled_request = (
@@ -279,4 +264,3 @@ class HTTPSmugglingModule(TrafficModule):
             yield from self._generate_websocket_smuggling(src_ip, dst_ip, port)
         else:
             yield from self._generate_pipeline_injection(src_ip, dst_ip, port)
-

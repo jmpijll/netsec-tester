@@ -161,4 +161,3 @@ class WebBrowsingModule(TrafficModule):
         )
 
         yield packet
-

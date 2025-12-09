@@ -59,16 +59,10 @@ class CryptominerModule(TrafficModule):
             ports=[3333, 4444, 80, 443],
         )
 
-    def _generate_stratum_subscribe(
-        self, src_ip: str, dst_ip: str, port: int
-    ) -> Iterator[Packet]:
+    def _generate_stratum_subscribe(self, src_ip: str, dst_ip: str, port: int) -> Iterator[Packet]:
         """Generate Stratum mining.subscribe message."""
         # Stratum protocol subscribe request
-        stratum_msg = {
-            "id": 1,
-            "method": "mining.subscribe",
-            "params": ["xmrig/6.18.0", None]
-        }
+        stratum_msg = {"id": 1, "method": "mining.subscribe", "params": ["xmrig/6.18.0", None]}
 
         payload = json.dumps(stratum_msg) + "\n"
 
@@ -79,18 +73,12 @@ class CryptominerModule(TrafficModule):
         )
         yield packet
 
-    def _generate_stratum_authorize(
-        self, src_ip: str, dst_ip: str, port: int
-    ) -> Iterator[Packet]:
+    def _generate_stratum_authorize(self, src_ip: str, dst_ip: str, port: int) -> Iterator[Packet]:
         """Generate Stratum mining.authorize message."""
         # Fake wallet address
         wallet = "4" + "".join(random.choices("0123456789ABCDEFabcdef", k=94))
 
-        stratum_msg = {
-            "id": 2,
-            "method": "mining.authorize",
-            "params": [wallet, "x"]
-        }
+        stratum_msg = {"id": 2, "method": "mining.authorize", "params": [wallet, "x"]}
 
         payload = json.dumps(stratum_msg) + "\n"
 
@@ -101,9 +89,7 @@ class CryptominerModule(TrafficModule):
         )
         yield packet
 
-    def _generate_stratum_submit(
-        self, src_ip: str, dst_ip: str, port: int
-    ) -> Iterator[Packet]:
+    def _generate_stratum_submit(self, src_ip: str, dst_ip: str, port: int) -> Iterator[Packet]:
         """Generate Stratum mining.submit message (share submission)."""
         stratum_msg = {
             "id": random.randint(100, 999),
@@ -114,7 +100,7 @@ class CryptominerModule(TrafficModule):
                 "".join(random.choices("0123456789abcdef", k=8)),
                 "".join(random.choices("0123456789abcdef", k=64)),
                 "".join(random.choices("0123456789abcdef", k=8)),
-            ]
+            ],
         }
 
         payload = json.dumps(stratum_msg) + "\n"
@@ -126,9 +112,7 @@ class CryptominerModule(TrafficModule):
         )
         yield packet
 
-    def _generate_pool_connection(
-        self, src_ip: str, dst_ip: str, port: int
-    ) -> Iterator[Packet]:
+    def _generate_pool_connection(self, src_ip: str, dst_ip: str, port: int) -> Iterator[Packet]:
         """Generate connection to known mining pool."""
         pool = random.choice(MINING_POOLS)
 
@@ -148,9 +132,7 @@ class CryptominerModule(TrafficModule):
         )
         yield packet
 
-    def _generate_webminer_script(
-        self, src_ip: str, dst_ip: str, port: int
-    ) -> Iterator[Packet]:
+    def _generate_webminer_script(self, src_ip: str, dst_ip: str, port: int) -> Iterator[Packet]:
         """Generate WebMiner script request."""
         script = random.choice(WEB_MINER_SCRIPTS)
 
@@ -169,9 +151,7 @@ class CryptominerModule(TrafficModule):
         )
         yield packet
 
-    def _generate_websocket_miner(
-        self, src_ip: str, dst_ip: str, port: int
-    ) -> Iterator[Packet]:
+    def _generate_websocket_miner(self, src_ip: str, dst_ip: str, port: int) -> Iterator[Packet]:
         """Generate WebSocket-based miner connection."""
         # WebSocket upgrade for browser mining
         ws_upgrade = (
@@ -192,9 +172,7 @@ class CryptominerModule(TrafficModule):
         )
         yield packet
 
-    def _generate_xmrig_api(
-        self, src_ip: str, dst_ip: str, port: int
-    ) -> Iterator[Packet]:
+    def _generate_xmrig_api(self, src_ip: str, dst_ip: str, port: int) -> Iterator[Packet]:
         """Generate XMRig API communication pattern."""
         # XMRig HTTP API access
         api_endpoints = [
@@ -221,16 +199,10 @@ class CryptominerModule(TrafficModule):
         )
         yield packet
 
-    def _generate_nicehash_pattern(
-        self, src_ip: str, dst_ip: str, port: int
-    ) -> Iterator[Packet]:
+    def _generate_nicehash_pattern(self, src_ip: str, dst_ip: str, port: int) -> Iterator[Packet]:
         """Generate NiceHash stratum pattern."""
         # NiceHash stratum protocol subscription
-        stratum_msg = {
-            "id": 1,
-            "method": "mining.subscribe",
-            "params": ["nicehash/1.0.0"]
-        }
+        stratum_msg = {"id": 1, "method": "mining.subscribe", "params": ["nicehash/1.0.0"]}
 
         payload = json.dumps(stratum_msg) + "\n"
 
@@ -279,4 +251,3 @@ class CryptominerModule(TrafficModule):
             yield from self._generate_xmrig_api(src_ip, dst_ip, port)
         else:
             yield from self._generate_nicehash_pattern(src_ip, dst_ip, port)
-

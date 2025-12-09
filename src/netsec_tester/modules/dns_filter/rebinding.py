@@ -207,4 +207,3 @@ class DNSRebindingModule(TrafficModule):
             yield from self._generate_timebound_rebind(src_ip, dst_ip)
         else:
             yield from self._generate_aaaa_rebind(src_ip, dst_ip)
-

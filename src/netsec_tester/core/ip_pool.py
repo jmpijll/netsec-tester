@@ -145,5 +145,3 @@ class IPPool:
             return addr in self._network
         except ValueError:
             return False
-
-

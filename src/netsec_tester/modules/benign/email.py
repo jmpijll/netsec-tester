@@ -181,4 +181,3 @@ class EmailModule(TrafficModule):
                 / Raw(load=cmd.encode())
             )
             yield packet
-

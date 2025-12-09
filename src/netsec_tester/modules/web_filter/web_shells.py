@@ -82,9 +82,7 @@ class WebShellsModule(TrafficModule):
             ports=[80, 443, 8080],
         )
 
-    def _generate_shell_access(
-        self, src_ip: str, dst_ip: str, port: int
-    ) -> Iterator[Packet]:
+    def _generate_shell_access(self, src_ip: str, dst_ip: str, port: int) -> Iterator[Packet]:
         """Generate web shell access request."""
         filename = random.choice(WEBSHELL_FILENAMES)
         command = random.choice(WEBSHELL_COMMANDS)
@@ -103,19 +101,19 @@ class WebShellsModule(TrafficModule):
         )
         yield packet
 
-    def _generate_shell_post(
-        self, src_ip: str, dst_ip: str, port: int
-    ) -> Iterator[Packet]:
+    def _generate_shell_post(self, src_ip: str, dst_ip: str, port: int) -> Iterator[Packet]:
         """Generate web shell POST command execution."""
         filename = random.choice(WEBSHELL_FILENAMES)
 
         # POST body with command
-        post_body = random.choice([
-            "cmd=whoami&submit=Execute",
-            "c=system('id');",
-            "0=system&1=whoami",
-            "action=shell&cmd=cat%20/etc/passwd",
-        ])
+        post_body = random.choice(
+            [
+                "cmd=whoami&submit=Execute",
+                "c=system('id');",
+                "0=system&1=whoami",
+                "action=shell&cmd=cat%20/etc/passwd",
+            ]
+        )
 
         http_request = (
             f"POST /{filename} HTTP/1.1\r\n"
@@ -134,9 +132,7 @@ class WebShellsModule(TrafficModule):
         )
         yield packet
 
-    def _generate_shell_upload(
-        self, src_ip: str, dst_ip: str, port: int
-    ) -> Iterator[Packet]:
+    def _generate_shell_upload(self, src_ip: str, dst_ip: str, port: int) -> Iterator[Packet]:
         """Generate web shell upload attempt."""
         # PHP web shell content (harmless indicator)
         shell_content = '<?php echo "test"; system($_GET["cmd"]); ?>'
@@ -169,9 +165,7 @@ class WebShellsModule(TrafficModule):
         )
         yield packet
 
-    def _generate_encoded_shell(
-        self, src_ip: str, dst_ip: str, port: int
-    ) -> Iterator[Packet]:
+    def _generate_encoded_shell(self, src_ip: str, dst_ip: str, port: int) -> Iterator[Packet]:
         """Generate encoded/obfuscated shell access."""
         # Base64 encoded command
         cmd = base64.b64encode(b"whoami").decode()
@@ -196,9 +190,7 @@ class WebShellsModule(TrafficModule):
         )
         yield packet
 
-    def _generate_aspx_shell(
-        self, src_ip: str, dst_ip: str, port: int
-    ) -> Iterator[Packet]:
+    def _generate_aspx_shell(self, src_ip: str, dst_ip: str, port: int) -> Iterator[Packet]:
         """Generate ASPX web shell patterns."""
         aspx_shells = [
             "/aspxspy.aspx?cmd=whoami",
@@ -210,10 +202,7 @@ class WebShellsModule(TrafficModule):
         path = random.choice(aspx_shells)
 
         http_request = (
-            f"GET {path} HTTP/1.1\r\n"
-            f"Host: {dst_ip}\r\n"
-            f"User-Agent: Mozilla/5.0\r\n"
-            f"\r\n"
+            f"GET {path} HTTP/1.1\r\n" f"Host: {dst_ip}\r\n" f"User-Agent: Mozilla/5.0\r\n" f"\r\n"
         )
 
         packet = (
@@ -223,9 +212,7 @@ class WebShellsModule(TrafficModule):
         )
         yield packet
 
-    def _generate_jsp_shell(
-        self, src_ip: str, dst_ip: str, port: int
-    ) -> Iterator[Packet]:
+    def _generate_jsp_shell(self, src_ip: str, dst_ip: str, port: int) -> Iterator[Packet]:
         """Generate JSP web shell patterns."""
         jsp_shells = [
             "/shell.jsp?cmd=whoami",
@@ -237,10 +224,7 @@ class WebShellsModule(TrafficModule):
         path = random.choice(jsp_shells)
 
         http_request = (
-            f"GET {path} HTTP/1.1\r\n"
-            f"Host: {dst_ip}\r\n"
-            f"User-Agent: Mozilla/5.0\r\n"
-            f"\r\n"
+            f"GET {path} HTTP/1.1\r\n" f"Host: {dst_ip}\r\n" f"User-Agent: Mozilla/5.0\r\n" f"\r\n"
         )
 
         packet = (
@@ -250,9 +234,7 @@ class WebShellsModule(TrafficModule):
         )
         yield packet
 
-    def _generate_china_chopper(
-        self, src_ip: str, dst_ip: str, port: int
-    ) -> Iterator[Packet]:
+    def _generate_china_chopper(self, src_ip: str, dst_ip: str, port: int) -> Iterator[Packet]:
         """Generate China Chopper web shell patterns."""
         # China Chopper uses single-char parameter
         china_chopper_patterns = [
@@ -316,4 +298,3 @@ class WebShellsModule(TrafficModule):
             yield from self._generate_jsp_shell(src_ip, dst_ip, port)
         else:
             yield from self._generate_china_chopper(src_ip, dst_ip, port)
-

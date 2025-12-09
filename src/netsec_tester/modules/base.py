@@ -81,5 +81,3 @@ class TrafficModule(ABC):
             TrafficCategory enum value
         """
         return self.get_info().category
-
-

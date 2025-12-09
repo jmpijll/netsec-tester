@@ -46,9 +46,7 @@ class P2PTorrentModule(TrafficModule):
             ports=[6881, 6889, 6969],
         )
 
-    def _generate_bt_handshake(
-        self, src_ip: str, dst_ip: str, port: int
-    ) -> Iterator[Packet]:
+    def _generate_bt_handshake(self, src_ip: str, dst_ip: str, port: int) -> Iterator[Packet]:
         """Generate BitTorrent handshake packet."""
         # BitTorrent handshake: <pstrlen><pstr><reserved><info_hash><peer_id>
         pstrlen = bytes([19])  # Length of "BitTorrent protocol"
@@ -71,9 +69,7 @@ class P2PTorrentModule(TrafficModule):
         node_id = bytes(random.randint(0, 255) for _ in range(20))
 
         # Bencoded format: d1:ad2:id20:<node_id>e1:q4:ping1:t2:<tid>1:y1:qe
-        dht_ping = (
-            b"d1:ad2:id20:" + node_id + b"e1:q4:ping1:t2:" + transaction_id + b"1:y1:qe"
-        )
+        dht_ping = b"d1:ad2:id20:" + node_id + b"e1:q4:ping1:t2:" + transaction_id + b"1:y1:qe"
 
         packet = (
             IP(src=src_ip, dst=dst_ip)
@@ -90,8 +86,13 @@ class P2PTorrentModule(TrafficModule):
 
         # find_node query
         dht_find = (
-            b"d1:ad2:id20:" + node_id + b"6:target20:" + target_id +
-            b"e1:q9:find_node1:t2:" + transaction_id + b"1:y1:qe"
+            b"d1:ad2:id20:"
+            + node_id
+            + b"6:target20:"
+            + target_id
+            + b"e1:q9:find_node1:t2:"
+            + transaction_id
+            + b"1:y1:qe"
         )
 
         packet = (
@@ -101,9 +102,7 @@ class P2PTorrentModule(TrafficModule):
         )
         yield packet
 
-    def _generate_tracker_request(
-        self, src_ip: str, dst_ip: str, port: int
-    ) -> Iterator[Packet]:
+    def _generate_tracker_request(self, src_ip: str, dst_ip: str, port: int) -> Iterator[Packet]:
         """Generate HTTP tracker announce request."""
         info_hash = bytes(random.randint(0, 255) for _ in range(20)).hex()
         peer_id = bytes(random.randint(0, 255) for _ in range(20)).hex()
@@ -144,9 +143,7 @@ class P2PTorrentModule(TrafficModule):
         )
         yield packet
 
-    def _generate_peer_exchange(
-        self, src_ip: str, dst_ip: str, port: int
-    ) -> Iterator[Packet]:
+    def _generate_peer_exchange(self, src_ip: str, dst_ip: str, port: int) -> Iterator[Packet]:
         """Generate Peer Exchange (PEX) message."""
         # Extension protocol PEX message
         # Extended message: length + msg_type (20) + ext_msg_type + payload
@@ -162,9 +159,7 @@ class P2PTorrentModule(TrafficModule):
         )
         yield packet
 
-    def _generate_magnet_resolution(
-        self, src_ip: str, dst_ip: str, port: int
-    ) -> Iterator[Packet]:
+    def _generate_magnet_resolution(self, src_ip: str, dst_ip: str, port: int) -> Iterator[Packet]:
         """Generate magnet link resolution traffic."""
         # DHT get_peers for info_hash
         info_hash = bytes(random.randint(0, 255) for _ in range(20))
@@ -172,8 +167,13 @@ class P2PTorrentModule(TrafficModule):
         transaction_id = bytes(random.randint(0, 255) for _ in range(2))
 
         dht_get_peers = (
-            b"d1:ad2:id20:" + node_id + b"9:info_hash20:" + info_hash +
-            b"e1:q9:get_peers1:t2:" + transaction_id + b"1:y1:qe"
+            b"d1:ad2:id20:"
+            + node_id
+            + b"9:info_hash20:"
+            + info_hash
+            + b"e1:q9:get_peers1:t2:"
+            + transaction_id
+            + b"1:y1:qe"
         )
 
         packet = (
@@ -183,9 +183,7 @@ class P2PTorrentModule(TrafficModule):
         )
         yield packet
 
-    def _generate_piece_request(
-        self, src_ip: str, dst_ip: str, port: int
-    ) -> Iterator[Packet]:
+    def _generate_piece_request(self, src_ip: str, dst_ip: str, port: int) -> Iterator[Packet]:
         """Generate BitTorrent piece request message."""
         # Request message: <len=0013><id=6><index><begin><length>
         index = random.randint(0, 1000)
@@ -239,4 +237,3 @@ class P2PTorrentModule(TrafficModule):
             yield from self._generate_magnet_resolution(src_ip, dst_ip, port)
         else:
             yield from self._generate_piece_request(src_ip, dst_ip, port)
-

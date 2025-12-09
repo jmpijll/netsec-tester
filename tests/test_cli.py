@@ -75,10 +75,13 @@ scenarios:
         result = runner.invoke(
             main,
             [
-                "--config", str(temp_config),
-                "run", "test-scenario",
+                "--config",
+                str(temp_config),
+                "run",
+                "test-scenario",
                 "--dry-run",
-                "--duration", "1",  # Very short duration
+                "--duration",
+                "1",  # Very short duration
             ],
         )
         # Should start without errors
@@ -100,13 +103,15 @@ scenarios:
         result = runner.invoke(
             main,
             [
-                "--config", str(temp_config),
-                "run", "test-scenario",
-                "--ip-range", "invalid",
+                "--config",
+                str(temp_config),
+                "run",
+                "test-scenario",
+                "--ip-range",
+                "invalid",
                 "--dry-run",
             ],
         )
         assert result.exit_code == 1
         assert "Invalid IP range" in result.output
         temp_config.unlink()
-

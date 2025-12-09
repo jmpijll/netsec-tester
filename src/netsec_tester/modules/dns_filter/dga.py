@@ -14,9 +14,21 @@ from netsec_tester.modules.base import ModuleInfo, TrafficCategory, TrafficModul
 
 # Top-level domains commonly used by DGAs
 DGA_TLDS = [
-    ".com", ".net", ".org", ".info", ".biz",
-    ".ru", ".cn", ".tk", ".pw", ".cc",
-    ".top", ".xyz", ".club", ".online", ".site",
+    ".com",
+    ".net",
+    ".org",
+    ".info",
+    ".biz",
+    ".ru",
+    ".cn",
+    ".tk",
+    ".pw",
+    ".cc",
+    ".top",
+    ".xyz",
+    ".club",
+    ".online",
+    ".site",
 ]
 
 
@@ -68,7 +80,7 @@ class DGAModule(TrafficModule):
         """Generate CryptoLocker-style DGA domain."""
         # Uses hash-based generation
         seed_str = f"{datetime.now().strftime('%Y%m%d')}{self._query_count}"
-        hash_val = hashlib.md5(seed_str.encode()).hexdigest()
+        hash_val = hashlib.md5(seed_str.encode(), usedforsecurity=False).hexdigest()
 
         # Take characters from hash
         domain = ""
@@ -110,9 +122,25 @@ class DGAModule(TrafficModule):
         """Generate Suppobox-style DGA domain with dictionary words."""
         # Some DGAs combine dictionary words
         words = [
-            "cloud", "data", "web", "net", "soft", "tech", "info",
-            "host", "server", "system", "online", "digital", "smart",
-            "fast", "secure", "safe", "global", "world", "best",
+            "cloud",
+            "data",
+            "web",
+            "net",
+            "soft",
+            "tech",
+            "info",
+            "host",
+            "server",
+            "system",
+            "online",
+            "digital",
+            "smart",
+            "fast",
+            "secure",
+            "safe",
+            "global",
+            "world",
+            "best",
         ]
         domain = random.choice(words) + random.choice(words)
         if random.random() > 0.5:
@@ -181,4 +209,3 @@ class DGAModule(TrafficModule):
                 )
             )
             yield packet
-

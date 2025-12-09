@@ -58,9 +58,7 @@ class APIAbuseModule(TrafficModule):
             ports=[80, 443, 8080, 3000],
         )
 
-    def _generate_graphql_injection(
-        self, src_ip: str, dst_ip: str, port: int
-    ) -> Iterator[Packet]:
+    def _generate_graphql_injection(self, src_ip: str, dst_ip: str, port: int) -> Iterator[Packet]:
         """Generate GraphQL injection attacks."""
         payload = random.choice(GRAPHQL_INJECTIONS)
 
@@ -81,9 +79,7 @@ class APIAbuseModule(TrafficModule):
         )
         yield packet
 
-    def _generate_jwt_attack(
-        self, src_ip: str, dst_ip: str, port: int
-    ) -> Iterator[Packet]:
+    def _generate_jwt_attack(self, src_ip: str, dst_ip: str, port: int) -> Iterator[Packet]:
         """Generate JWT manipulation attacks."""
         token = random.choice(JWT_ATTACKS)
 
@@ -102,9 +98,7 @@ class APIAbuseModule(TrafficModule):
         )
         yield packet
 
-    def _generate_rate_limit_bypass(
-        self, src_ip: str, dst_ip: str, port: int
-    ) -> Iterator[Packet]:
+    def _generate_rate_limit_bypass(self, src_ip: str, dst_ip: str, port: int) -> Iterator[Packet]:
         """Generate rate limit bypass attempts."""
         # Headers commonly used to bypass rate limits
         bypass_headers = [
@@ -137,9 +131,7 @@ class APIAbuseModule(TrafficModule):
         )
         yield packet
 
-    def _generate_rest_injection(
-        self, src_ip: str, dst_ip: str, port: int
-    ) -> Iterator[Packet]:
+    def _generate_rest_injection(self, src_ip: str, dst_ip: str, port: int) -> Iterator[Packet]:
         """Generate REST API injection patterns."""
         # NoSQL injection patterns
         nosql_payloads = [
@@ -168,9 +160,7 @@ class APIAbuseModule(TrafficModule):
         )
         yield packet
 
-    def _generate_idor_pattern(
-        self, src_ip: str, dst_ip: str, port: int
-    ) -> Iterator[Packet]:
+    def _generate_idor_pattern(self, src_ip: str, dst_ip: str, port: int) -> Iterator[Packet]:
         """Generate Insecure Direct Object Reference patterns."""
         # IDOR attempts via ID manipulation
         paths = [
@@ -199,9 +189,7 @@ class APIAbuseModule(TrafficModule):
         )
         yield packet
 
-    def _generate_mass_assignment(
-        self, src_ip: str, dst_ip: str, port: int
-    ) -> Iterator[Packet]:
+    def _generate_mass_assignment(self, src_ip: str, dst_ip: str, port: int) -> Iterator[Packet]:
         """Generate mass assignment attack patterns."""
         # Attempt to modify protected fields
         payloads = [
@@ -230,9 +218,7 @@ class APIAbuseModule(TrafficModule):
         )
         yield packet
 
-    def _generate_api_version_abuse(
-        self, src_ip: str, dst_ip: str, port: int
-    ) -> Iterator[Packet]:
+    def _generate_api_version_abuse(self, src_ip: str, dst_ip: str, port: int) -> Iterator[Packet]:
         """Generate API version abuse patterns."""
         # Accessing old/deprecated API versions
         old_versions = [
@@ -246,10 +232,7 @@ class APIAbuseModule(TrafficModule):
         path = random.choice(old_versions)
 
         http_request = (
-            f"GET {path} HTTP/1.1\r\n"
-            f"Host: {dst_ip}\r\n"
-            f"User-Agent: Mozilla/5.0\r\n"
-            f"\r\n"
+            f"GET {path} HTTP/1.1\r\n" f"Host: {dst_ip}\r\n" f"User-Agent: Mozilla/5.0\r\n" f"\r\n"
         )
 
         packet = (
@@ -295,4 +278,3 @@ class APIAbuseModule(TrafficModule):
             yield from self._generate_mass_assignment(src_ip, dst_ip, port)
         else:
             yield from self._generate_api_version_abuse(src_ip, dst_ip, port)
-

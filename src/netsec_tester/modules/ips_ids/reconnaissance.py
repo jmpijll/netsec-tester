@@ -10,8 +10,31 @@ from netsec_tester.modules.base import ModuleInfo, TrafficCategory, TrafficModul
 
 # Common ports for scanning
 COMMON_PORTS = [
-    21, 22, 23, 25, 53, 80, 110, 111, 135, 139, 143, 443, 445, 993, 995,
-    1433, 1521, 3306, 3389, 5432, 5900, 6379, 8080, 8443, 27017,
+    21,
+    22,
+    23,
+    25,
+    53,
+    80,
+    110,
+    111,
+    135,
+    139,
+    143,
+    443,
+    445,
+    993,
+    995,
+    1433,
+    1521,
+    3306,
+    3389,
+    5432,
+    5900,
+    6379,
+    8080,
+    8443,
+    27017,
 ]
 
 # Vulnerability scanner User-Agents
@@ -72,56 +95,44 @@ class ReconnaissanceModule(TrafficModule):
         # Scan multiple ports rapidly
         ports_to_scan = random.sample(COMMON_PORTS, min(5, len(COMMON_PORTS)))
         for port in ports_to_scan:
-            packet = (
-                IP(src=src_ip, dst=dst_ip)
-                / TCP(
-                    sport=random.randint(49152, 65535),
-                    dport=port,
-                    flags="S",
-                    seq=random.randint(0, 4294967295),
-                )
+            packet = IP(src=src_ip, dst=dst_ip) / TCP(
+                sport=random.randint(49152, 65535),
+                dport=port,
+                flags="S",
+                seq=random.randint(0, 4294967295),
             )
             yield packet
 
     def _generate_null_scan(self, src_ip: str, dst_ip: str) -> Iterator[Packet]:
         """Generate NULL scan packets (no flags set)."""
         port = random.choice(COMMON_PORTS)
-        packet = (
-            IP(src=src_ip, dst=dst_ip)
-            / TCP(
-                sport=random.randint(49152, 65535),
-                dport=port,
-                flags="",  # No flags
-                seq=random.randint(0, 4294967295),
-            )
+        packet = IP(src=src_ip, dst=dst_ip) / TCP(
+            sport=random.randint(49152, 65535),
+            dport=port,
+            flags="",  # No flags
+            seq=random.randint(0, 4294967295),
         )
         yield packet
 
     def _generate_fin_scan(self, src_ip: str, dst_ip: str) -> Iterator[Packet]:
         """Generate FIN scan packets."""
         port = random.choice(COMMON_PORTS)
-        packet = (
-            IP(src=src_ip, dst=dst_ip)
-            / TCP(
-                sport=random.randint(49152, 65535),
-                dport=port,
-                flags="F",
-                seq=random.randint(0, 4294967295),
-            )
+        packet = IP(src=src_ip, dst=dst_ip) / TCP(
+            sport=random.randint(49152, 65535),
+            dport=port,
+            flags="F",
+            seq=random.randint(0, 4294967295),
         )
         yield packet
 
     def _generate_xmas_scan(self, src_ip: str, dst_ip: str) -> Iterator[Packet]:
         """Generate XMAS scan packets (FIN, PSH, URG flags)."""
         port = random.choice(COMMON_PORTS)
-        packet = (
-            IP(src=src_ip, dst=dst_ip)
-            / TCP(
-                sport=random.randint(49152, 65535),
-                dport=port,
-                flags="FPU",  # FIN, PUSH, URG
-                seq=random.randint(0, 4294967295),
-            )
+        packet = IP(src=src_ip, dst=dst_ip) / TCP(
+            sport=random.randint(49152, 65535),
+            dport=port,
+            flags="FPU",  # FIN, PUSH, URG
+            seq=random.randint(0, 4294967295),
         )
         yield packet
 
@@ -129,10 +140,7 @@ class ReconnaissanceModule(TrafficModule):
         """Generate UDP scan packets."""
         udp_ports = [53, 67, 68, 69, 123, 137, 138, 161, 162, 500, 514, 1900]
         port = random.choice(udp_ports)
-        packet = (
-            IP(src=src_ip, dst=dst_ip)
-            / UDP(sport=random.randint(49152, 65535), dport=port)
-        )
+        packet = IP(src=src_ip, dst=dst_ip) / UDP(sport=random.randint(49152, 65535), dport=port)
         yield packet
 
     def _generate_os_fingerprint(self, src_ip: str, dst_ip: str) -> Iterator[Packet]:
@@ -141,15 +149,12 @@ class ReconnaissanceModule(TrafficModule):
         fp = random.choice(OS_FINGERPRINT_PATTERNS)
         port = random.choice([80, 443, 22])
 
-        packet = (
-            IP(src=src_ip, dst=dst_ip, ttl=fp["ttl"])
-            / TCP(
-                sport=random.randint(49152, 65535),
-                dport=port,
-                flags="S",
-                window=fp["window"],
-                options=fp["options"],
-            )
+        packet = IP(src=src_ip, dst=dst_ip, ttl=fp["ttl"]) / TCP(
+            sport=random.randint(49152, 65535),
+            dport=port,
+            flags="S",
+            window=fp["window"],
+            options=fp["options"],
         )
         yield packet
 
@@ -261,4 +266,3 @@ class ReconnaissanceModule(TrafficModule):
             yield from self._generate_banner_grab(src_ip, dst_ip, port)
         else:
             yield from self._generate_vuln_scanner_request(src_ip, dst_ip, port)
-

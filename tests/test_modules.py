@@ -141,11 +141,13 @@ class TestModuleInterface:
     def test_module_generates_packets(self, module_class: type[TrafficModule]) -> None:
         """Test that module generates packets."""
         module = module_class()
-        packets = list(module.generate_packets(
-            src_ip="10.0.0.1",
-            dst_ip="192.168.1.1",
-            dst_port=80,
-        ))
+        packets = list(
+            module.generate_packets(
+                src_ip="10.0.0.1",
+                dst_ip="192.168.1.1",
+                dst_port=80,
+            )
+        )
 
         assert len(packets) > 0
         for packet in packets:
@@ -244,7 +246,9 @@ class TestIPSModules:
 
         combined = " ".join(all_raw)
         # Should contain username/password patterns
-        assert "admin" in combined.lower() or "user" in combined.lower() or "pass" in combined.lower()
+        assert (
+            "admin" in combined.lower() or "user" in combined.lower() or "pass" in combined.lower()
+        )
 
     def test_ssrf_xxe_patterns(self) -> None:
         """Test SSRF/XXE module generates attack patterns."""
@@ -259,7 +263,9 @@ class TestIPSModules:
 
         combined = " ".join(all_raw)
         # Should contain SSRF targets or XML patterns
-        patterns_found = any(p in combined for p in ["127.0.0.1", "localhost", "<!DOCTYPE", "ENTITY"])
+        patterns_found = any(
+            p in combined for p in ["127.0.0.1", "localhost", "<!DOCTYPE", "ENTITY"]
+        )
         assert patterns_found, "Expected SSRF/XXE patterns"
 
 
@@ -339,7 +345,11 @@ class TestWebModules:
 
         combined = " ".join(all_raw)
         # Should contain API patterns
-        assert "graphql" in combined.lower() or "api" in combined.lower() or "bearer" in combined.lower()
+        assert (
+            "graphql" in combined.lower()
+            or "api" in combined.lower()
+            or "bearer" in combined.lower()
+        )
 
     def test_web_shells_patterns(self) -> None:
         """Test web shells module generates shell access patterns."""

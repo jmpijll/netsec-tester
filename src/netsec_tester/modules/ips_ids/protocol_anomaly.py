@@ -33,35 +33,26 @@ class ProtocolAnomalyModule(TrafficModule):
     def _generate_invalid_tcp_flags(self, src_ip: str, dst_ip: str, port: int) -> Iterator[Packet]:
         """Generate packets with invalid TCP flag combinations."""
         # SYN+FIN (invalid - connection start and end)
-        packet = (
-            IP(src=src_ip, dst=dst_ip)
-            / TCP(
-                sport=random.randint(49152, 65535),
-                dport=port,
-                flags="SF",  # SYN+FIN
-            )
+        packet = IP(src=src_ip, dst=dst_ip) / TCP(
+            sport=random.randint(49152, 65535),
+            dport=port,
+            flags="SF",  # SYN+FIN
         )
         yield packet
 
         # SYN+RST (invalid - start and abort)
-        packet = (
-            IP(src=src_ip, dst=dst_ip)
-            / TCP(
-                sport=random.randint(49152, 65535),
-                dport=port,
-                flags="SR",  # SYN+RST
-            )
+        packet = IP(src=src_ip, dst=dst_ip) / TCP(
+            sport=random.randint(49152, 65535),
+            dport=port,
+            flags="SR",  # SYN+RST
         )
         yield packet
 
         # All flags set (Christmas tree + more)
-        packet = (
-            IP(src=src_ip, dst=dst_ip)
-            / TCP(
-                sport=random.randint(49152, 65535),
-                dport=port,
-                flags="FSRPAUEC",  # All flags
-            )
+        packet = IP(src=src_ip, dst=dst_ip) / TCP(
+            sport=random.randint(49152, 65535),
+            dport=port,
+            flags="FSRPAUEC",  # All flags
         )
         yield packet
 
@@ -110,14 +101,11 @@ class ProtocolAnomalyModule(TrafficModule):
             ("NOP", None),
         ]
 
-        packet = (
-            IP(src=src_ip, dst=dst_ip)
-            / TCP(
-                sport=random.randint(49152, 65535),
-                dport=port,
-                flags="S",
-                options=tcp_options,
-            )
+        packet = IP(src=src_ip, dst=dst_ip) / TCP(
+            sport=random.randint(49152, 65535),
+            dport=port,
+            flags="S",
+            options=tcp_options,
         )
         yield packet
 
@@ -154,10 +142,7 @@ class ProtocolAnomalyModule(TrafficModule):
         yield packet
 
         # Second fragment with rest of data
-        packet = (
-            IP(src=src_ip, dst=dst_ip, frag=1)
-            / Raw(load=http_request[8:])
-        )
+        packet = IP(src=src_ip, dst=dst_ip, frag=1) / Raw(load=http_request[8:])
         yield packet
 
     def _generate_ping_of_death(self, src_ip: str, dst_ip: str) -> Iterator[Packet]:
@@ -165,11 +150,7 @@ class ProtocolAnomalyModule(TrafficModule):
         # Large ICMP packet (historical attack, triggers signature)
         large_payload = b"X" * 1472  # Near MTU limit
 
-        packet = (
-            IP(src=src_ip, dst=dst_ip)
-            / ICMP(type=8, code=0)
-            / Raw(load=large_payload)
-        )
+        packet = IP(src=src_ip, dst=dst_ip) / ICMP(type=8, code=0) / Raw(load=large_payload)
         yield packet
 
     def _generate_land_attack(self, src_ip: str, dst_ip: str, port: int) -> Iterator[Packet]:
@@ -184,23 +165,19 @@ class ProtocolAnomalyModule(TrafficModule):
     def _generate_invalid_checksum(self, src_ip: str, dst_ip: str, port: int) -> Iterator[Packet]:
         """Generate packets with invalid checksums."""
         # Create packet then corrupt checksum
-        packet = (
-            IP(src=src_ip, dst=dst_ip)
-            / TCP(sport=random.randint(49152, 65535), dport=port, flags="S", chksum=0x1234)
+        packet = IP(src=src_ip, dst=dst_ip) / TCP(
+            sport=random.randint(49152, 65535), dport=port, flags="S", chksum=0x1234
         )
         yield packet
 
     def _generate_reserved_flags(self, src_ip: str, dst_ip: str, port: int) -> Iterator[Packet]:
         """Generate packets with reserved/ECN flags set unusually."""
         # Reserved bits set (historically unused)
-        packet = (
-            IP(src=src_ip, dst=dst_ip)
-            / TCP(
-                sport=random.randint(49152, 65535),
-                dport=port,
-                flags="SEC",  # SYN + ECE + CWR
-                reserved=7,  # Reserved bits
-            )
+        packet = IP(src=src_ip, dst=dst_ip) / TCP(
+            sport=random.randint(49152, 65535),
+            dport=port,
+            flags="SEC",  # SYN + ECE + CWR
+            reserved=7,  # Reserved bits
         )
         yield packet
 
@@ -244,4 +221,3 @@ class ProtocolAnomalyModule(TrafficModule):
             yield from self._generate_invalid_checksum(src_ip, dst_ip, port)
         else:
             yield from self._generate_reserved_flags(src_ip, dst_ip, port)
-

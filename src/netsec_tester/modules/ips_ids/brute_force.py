@@ -11,16 +11,43 @@ from netsec_tester.modules.base import ModuleInfo, TrafficCategory, TrafficModul
 
 # Common usernames for brute force
 COMMON_USERNAMES = [
-    "admin", "root", "user", "test", "guest", "administrator",
-    "oracle", "postgres", "mysql", "ftp", "www", "mail",
-    "support", "info", "sales", "backup", "operator",
+    "admin",
+    "root",
+    "user",
+    "test",
+    "guest",
+    "administrator",
+    "oracle",
+    "postgres",
+    "mysql",
+    "ftp",
+    "www",
+    "mail",
+    "support",
+    "info",
+    "sales",
+    "backup",
+    "operator",
 ]
 
 # Common passwords for brute force
 COMMON_PASSWORDS = [
-    "password", "123456", "admin", "root", "test", "guest",
-    "letmein", "welcome", "monkey", "dragon", "master",
-    "qwerty", "login", "passw0rd", "admin123", "root123",
+    "password",
+    "123456",
+    "admin",
+    "root",
+    "test",
+    "guest",
+    "letmein",
+    "welcome",
+    "monkey",
+    "dragon",
+    "master",
+    "qwerty",
+    "login",
+    "passw0rd",
+    "admin123",
+    "root123",
 ]
 
 
@@ -58,13 +85,10 @@ class BruteForceModule(TrafficModule):
 
         # Multiple rapid connection attempts indicate brute force
         for _ in range(3):
-            packet = (
-                IP(src=src_ip, dst=dst_ip)
-                / TCP(
-                    sport=random.randint(49152, 65535),
-                    dport=22,
-                    flags="S",
-                )
+            packet = IP(src=src_ip, dst=dst_ip) / TCP(
+                sport=random.randint(49152, 65535),
+                dport=22,
+                flags="S",
             )
             yield packet
 
@@ -117,9 +141,7 @@ class BruteForceModule(TrafficModule):
         )
         yield packet
 
-    def _generate_http_form_brute(
-        self, src_ip: str, dst_ip: str, port: int
-    ) -> Iterator[Packet]:
+    def _generate_http_form_brute(self, src_ip: str, dst_ip: str, port: int) -> Iterator[Packet]:
         """Generate HTTP form-based login brute force patterns."""
         username = random.choice(COMMON_USERNAMES)
         password = random.choice(COMMON_PASSWORDS)
@@ -191,15 +213,24 @@ class BruteForceModule(TrafficModule):
         # Multiple rapid RDP connection attempts
         for _ in range(3):
             # RDP X.224 Connection Request
-            rdp_init = bytes([
-                0x03, 0x00,  # TPKT version
-                0x00, 0x13,  # Length
-                0x0e,  # X.224 length
-                0xe0,  # Connection request
-                0x00, 0x00,  # DST-REF
-                0x00, 0x00,  # SRC-REF
-                0x00,  # Class
-            ]) + b"Cookie: mstshash=user\r\n"
+            rdp_init = (
+                bytes(
+                    [
+                        0x03,
+                        0x00,  # TPKT version
+                        0x00,
+                        0x13,  # Length
+                        0x0E,  # X.224 length
+                        0xE0,  # Connection request
+                        0x00,
+                        0x00,  # DST-REF
+                        0x00,
+                        0x00,  # SRC-REF
+                        0x00,  # Class
+                    ]
+                )
+                + b"Cookie: mstshash=user\r\n"
+            )
 
             packet = (
                 IP(src=src_ip, dst=dst_ip)
@@ -219,7 +250,8 @@ class BruteForceModule(TrafficModule):
             + b"\x00\x00\x00\x01"  # Max packet size
             + b"\x21"  # Charset
             + b"\x00" * 23  # Reserved
-            + username.encode() + b"\x00"  # Username
+            + username.encode()
+            + b"\x00"  # Username
             + b"\x00"  # Auth response length
         )
 
@@ -266,4 +298,3 @@ class BruteForceModule(TrafficModule):
             yield from self._generate_rdp_brute_force(src_ip, dst_ip)
         else:
             yield from self._generate_mysql_brute_force(src_ip, dst_ip)
-

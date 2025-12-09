@@ -5,5 +5,3 @@ from netsec_tester.core.ip_pool import IPPool
 from netsec_tester.core.stats import StatsCollector
 
 __all__ = ["TrafficEngine", "IPPool", "StatsCollector"]
-
-

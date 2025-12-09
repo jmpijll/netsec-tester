@@ -148,4 +148,3 @@ class FileTransferModule(TrafficModule):
             / Raw(load=http_request.encode())
         )
         yield packet
-

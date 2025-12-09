@@ -182,5 +182,3 @@ class TrafficEngine:
     def is_running(self) -> bool:
         """Return whether the engine is currently running."""
         return self._running
-
-

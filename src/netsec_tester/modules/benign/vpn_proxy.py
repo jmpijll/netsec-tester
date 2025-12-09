@@ -78,30 +78,28 @@ class VPNProxyModule(TrafficModule):
         length = struct.pack(">I", 28)  # Header only
 
         ike_header = (
-            initiator_spi + responder_spi +
-            bytes([next_payload, version, exchange_type, flags]) +
-            message_id + length
+            initiator_spi
+            + responder_spi
+            + bytes([next_payload, version, exchange_type, flags])
+            + message_id
+            + length
         )
 
-        packet = (
-            IP(src=src_ip, dst=dst_ip)
-            / UDP(sport=500, dport=500)
-            / Raw(load=ike_header)
-        )
+        packet = IP(src=src_ip, dst=dst_ip) / UDP(sport=500, dport=500) / Raw(load=ike_header)
         yield packet
 
-    def _generate_socks5_handshake(
-        self, src_ip: str, dst_ip: str, port: int
-    ) -> Iterator[Packet]:
+    def _generate_socks5_handshake(self, src_ip: str, dst_ip: str, port: int) -> Iterator[Packet]:
         """Generate SOCKS5 handshake packet."""
         # SOCKS5 greeting
         # Version + Number of methods + Methods
-        socks_greeting = bytes([
-            0x05,  # SOCKS version 5
-            0x02,  # 2 authentication methods
-            0x00,  # No authentication
-            0x02,  # Username/password
-        ])
+        socks_greeting = bytes(
+            [
+                0x05,  # SOCKS version 5
+                0x02,  # 2 authentication methods
+                0x00,  # No authentication
+                0x02,  # Username/password
+            ]
+        )
 
         packet = (
             IP(src=src_ip, dst=dst_ip)
@@ -110,21 +108,25 @@ class VPNProxyModule(TrafficModule):
         )
         yield packet
 
-    def _generate_socks5_connect(
-        self, src_ip: str, dst_ip: str, port: int
-    ) -> Iterator[Packet]:
+    def _generate_socks5_connect(self, src_ip: str, dst_ip: str, port: int) -> Iterator[Packet]:
         """Generate SOCKS5 CONNECT request."""
         # SOCKS5 CONNECT request
         # Version + Command + Reserved + Address type + Address + Port
         target_host = "www.example.com"
 
-        socks_connect = bytes([
-            0x05,  # Version
-            0x01,  # CONNECT
-            0x00,  # Reserved
-            0x03,  # Domain name
-            len(target_host),  # Domain length
-        ]) + target_host.encode() + struct.pack(">H", 80)
+        socks_connect = (
+            bytes(
+                [
+                    0x05,  # Version
+                    0x01,  # CONNECT
+                    0x00,  # Reserved
+                    0x03,  # Domain name
+                    len(target_host),  # Domain length
+                ]
+            )
+            + target_host.encode()
+            + struct.pack(">H", 80)
+        )
 
         packet = (
             IP(src=src_ip, dst=dst_ip)
@@ -145,9 +147,7 @@ class VPNProxyModule(TrafficModule):
         )
         yield packet
 
-    def _generate_http_proxy(
-        self, src_ip: str, dst_ip: str, port: int
-    ) -> Iterator[Packet]:
+    def _generate_http_proxy(self, src_ip: str, dst_ip: str, port: int) -> Iterator[Packet]:
         """Generate HTTP CONNECT proxy request."""
         target = f"www.example.com:{random.choice([80, 443])}"
 
@@ -166,9 +166,7 @@ class VPNProxyModule(TrafficModule):
         )
         yield packet
 
-    def _generate_ssl_vpn(
-        self, src_ip: str, dst_ip: str, port: int
-    ) -> Iterator[Packet]:
+    def _generate_ssl_vpn(self, src_ip: str, dst_ip: str, port: int) -> Iterator[Packet]:
         """Generate SSL VPN pattern (Cisco AnyConnect style)."""
         # SSL VPN usually starts with HTTPS to specific paths
         vpn_paths = [
@@ -194,9 +192,7 @@ class VPNProxyModule(TrafficModule):
         )
         yield packet
 
-    def _generate_tor_circuit(
-        self, src_ip: str, dst_ip: str, port: int
-    ) -> Iterator[Packet]:
+    def _generate_tor_circuit(self, src_ip: str, dst_ip: str, port: int) -> Iterator[Packet]:
         """Generate Tor-like circuit establishment pattern."""
         # Tor cells are 512 bytes, starting with circuit ID and command
         circuit_id = struct.pack(">I", random.randint(1, 0xFFFFFFFF))
@@ -254,4 +250,3 @@ class VPNProxyModule(TrafficModule):
             yield from self._generate_ssl_vpn(src_ip, dst_ip, port)
         else:
             yield from self._generate_tor_circuit(src_ip, dst_ip, port)
-

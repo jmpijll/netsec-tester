@@ -135,9 +135,7 @@ class RansomwareModule(TrafficModule):
         )
         yield packet
 
-    def _generate_key_exchange(
-        self, src_ip: str, dst_ip: str, port: int
-    ) -> Iterator[Packet]:
+    def _generate_key_exchange(self, src_ip: str, dst_ip: str, port: int) -> Iterator[Packet]:
         """Generate ransomware key exchange patterns."""
         # POST to C2 with victim ID and encrypted key
         victim_id = f"VICTIM-{random.randint(100000, 999999)}"
@@ -191,9 +189,7 @@ class RansomwareModule(TrafficModule):
         )
         yield packet
 
-    def _generate_tor_proxy_access(
-        self, src_ip: str, dst_ip: str, port: int
-    ) -> Iterator[Packet]:
+    def _generate_tor_proxy_access(self, src_ip: str, dst_ip: str, port: int) -> Iterator[Packet]:
         """Generate Tor proxy access patterns (ransomware often uses Tor)."""
         # Access to .onion via clearnet proxy
         onion_proxies = [
@@ -224,7 +220,9 @@ class RansomwareModule(TrafficModule):
     ) -> Iterator[Packet]:
         """Generate Bitcoin address lookup patterns."""
         # Fake Bitcoin address (valid format)
-        btc_address = "1" + "".join(random.choices("123456789ABCDEFGHJKLMNPQRSTUVWXYZabcdefghijkmnopqrstuvwxyz", k=33))
+        btc_address = "1" + "".join(
+            random.choices("123456789ABCDEFGHJKLMNPQRSTUVWXYZabcdefghijkmnopqrstuvwxyz", k=33)
+        )
 
         http_request = (
             f"GET /api/address/{btc_address} HTTP/1.1\r\n"
@@ -300,4 +298,3 @@ class RansomwareModule(TrafficModule):
             yield from self._generate_bitcoin_address_check(src_ip, dst_ip, port)
         else:
             yield from self._generate_shadow_copy_indicator(src_ip, dst_ip, port)
-

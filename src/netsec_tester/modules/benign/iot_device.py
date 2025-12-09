@@ -71,11 +71,13 @@ class IoTDeviceModule(TrafficModule):
         ]
 
         topic = random.choice(topics)
-        message = json.dumps({
-            "value": round(random.uniform(20.0, 30.0), 1),
-            "unit": "celsius",
-            "timestamp": "2023-12-15T12:00:00Z"
-        })
+        message = json.dumps(
+            {
+                "value": round(random.uniform(20.0, 30.0), 1),
+                "unit": "celsius",
+                "timestamp": "2023-12-15T12:00:00Z",
+            }
+        )
 
         # MQTT PUBLISH packet
         topic_len = struct.pack(">H", len(topic))
@@ -114,9 +116,7 @@ class IoTDeviceModule(TrafficModule):
         )
         yield packet
 
-    def _generate_zigbee_gateway(
-        self, src_ip: str, dst_ip: str, port: int
-    ) -> Iterator[Packet]:
+    def _generate_zigbee_gateway(self, src_ip: str, dst_ip: str, port: int) -> Iterator[Packet]:
         """Generate Zigbee gateway API request."""
         # Philips Hue style API
         endpoints = [
@@ -142,16 +142,10 @@ class IoTDeviceModule(TrafficModule):
         )
         yield packet
 
-    def _generate_smart_plug(
-        self, src_ip: str, dst_ip: str, port: int
-    ) -> Iterator[Packet]:
+    def _generate_smart_plug(self, src_ip: str, dst_ip: str, port: int) -> Iterator[Packet]:
         """Generate smart plug communication pattern."""
         # TP-Link Kasa style local API
-        command = json.dumps({
-            "system": {
-                "get_sysinfo": {}
-            }
-        })
+        command = json.dumps({"system": {"get_sysinfo": {}}})
 
         # TP-Link uses a simple XOR encryption - this is plaintext pattern
         http_request = (
@@ -170,9 +164,7 @@ class IoTDeviceModule(TrafficModule):
         )
         yield packet
 
-    def _generate_thermostat(
-        self, src_ip: str, dst_ip: str, port: int
-    ) -> Iterator[Packet]:
+    def _generate_thermostat(self, src_ip: str, dst_ip: str, port: int) -> Iterator[Packet]:
         """Generate smart thermostat API request."""
         # Nest-style API pattern
         endpoints = [
@@ -198,9 +190,7 @@ class IoTDeviceModule(TrafficModule):
         )
         yield packet
 
-    def _generate_camera_stream(
-        self, src_ip: str, dst_ip: str, port: int
-    ) -> Iterator[Packet]:
+    def _generate_camera_stream(self, src_ip: str, dst_ip: str, port: int) -> Iterator[Packet]:
         """Generate IP camera RTSP-like pattern."""
         # RTSP DESCRIBE request
         rtsp_request = (
@@ -218,9 +208,7 @@ class IoTDeviceModule(TrafficModule):
         )
         yield packet
 
-    def _generate_home_assistant(
-        self, src_ip: str, dst_ip: str, port: int
-    ) -> Iterator[Packet]:
+    def _generate_home_assistant(self, src_ip: str, dst_ip: str, port: int) -> Iterator[Packet]:
         """Generate Home Assistant API request."""
         endpoints = [
             "/api/states",
@@ -284,4 +272,3 @@ class IoTDeviceModule(TrafficModule):
             yield from self._generate_camera_stream(src_ip, dst_ip, port)
         else:
             yield from self._generate_home_assistant(src_ip, dst_ip, port)
-

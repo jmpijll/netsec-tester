@@ -225,4 +225,3 @@ class DNSAmplificationModule(TrafficModule):
             yield from self._generate_isc_query(src_ip, dst_ip)
         else:
             yield from self._generate_spoofed_source(src_ip, dst_ip)
-

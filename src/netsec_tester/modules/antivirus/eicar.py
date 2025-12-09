@@ -76,7 +76,7 @@ class EICARModule(TrafficModule):
             http_response = (
                 f"HTTP/1.1 200 OK\r\n"
                 f"Content-Type: application/octet-stream\r\n"
-                f"Content-Disposition: attachment; filename=\"eicar.com\"\r\n"
+                f'Content-Disposition: attachment; filename="eicar.com"\r\n'
                 f"Content-Length: {len(body)}\r\n"
                 f"Connection: close\r\n"
                 f"\r\n"
@@ -159,4 +159,3 @@ class EICARModule(TrafficModule):
         )
 
         yield packet
-
