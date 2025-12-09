@@ -129,7 +129,7 @@ class URLPatternsModule(TrafficModule):
         else:
             # Generate dynamic suspicious URL
             suspicious_files = ["shell.php", "backdoor.jsp", "cmd.asp", "eval.cgi"]
-            suspicious_dirs = ["/admin", "/uploads", "/tmp", "/cgi-bin", "/.hidden"]
+            suspicious_dirs = ["/admin", "/uploads", "/tmp", "/cgi-bin", "/.hidden"]  # nosec B108
             path = random.choice(suspicious_dirs) + "/" + random.choice(suspicious_files)
 
         # Create HTTP GET request

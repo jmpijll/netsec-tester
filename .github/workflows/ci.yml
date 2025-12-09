@@ -93,7 +93,10 @@ jobs:
           pip install bandit safety
 
       - name: Run Bandit security scan
-        run: bandit -r src -ll -ii
+        # Note: This is a security testing tool that intentionally contains
+        # patterns that trigger security scanners. We skip B108 (hardcoded tmp)
+        # and B104 (hardcoded bind addresses) as these are test payloads.
+        run: bandit -r src -ll -ii --skip B108,B104
 
       - name: Check dependencies for vulnerabilities
         run: |
