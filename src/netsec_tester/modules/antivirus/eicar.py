@@ -1,13 +1,12 @@
 """EICAR test file module for antivirus testing."""
 
 import random
-from typing import Iterator
+from collections.abc import Iterator
 
 from scapy.layers.inet import IP, TCP
 from scapy.packet import Packet, Raw
 
 from netsec_tester.modules.base import ModuleInfo, TrafficCategory, TrafficModule
-
 
 # EICAR test string - industry standard AV test
 # This is safe and only triggers AV detection, not actual malware

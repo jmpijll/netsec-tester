@@ -1,9 +1,7 @@
 """Tests for scenario management."""
 
-from pathlib import Path
 import tempfile
-
-import pytest
+from pathlib import Path
 
 from netsec_tester.scenarios.base import Scenario, ScenarioConfig
 from netsec_tester.scenarios.registry import ScenarioRegistry

@@ -1,12 +1,11 @@
 """Directory Traversal pattern traffic module."""
 
-from typing import Iterator
+from collections.abc import Iterator
 
 from scapy.layers.inet import IP, TCP
 from scapy.packet import Packet, Raw
 
 from netsec_tester.modules.base import ModuleInfo, TrafficCategory, TrafficModule
-
 
 # Directory traversal payloads
 DIRECTORY_TRAVERSAL_PAYLOADS = [

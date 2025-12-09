@@ -4,13 +4,12 @@ import base64
 import json
 import random
 import string
-from typing import Iterator
+from collections.abc import Iterator
 
 from scapy.layers.inet import IP, TCP
 from scapy.packet import Packet, Raw
 
 from netsec_tester.modules.base import ModuleInfo, TrafficCategory, TrafficModule
-
 
 # Cloud storage services often abused for exfiltration
 EXFIL_DOMAINS = [

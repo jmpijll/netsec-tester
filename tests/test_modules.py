@@ -2,67 +2,66 @@
 
 import pytest
 
-from netsec_tester.modules.base import TrafficCategory, TrafficModule, ModuleInfo
-
-# IPS/IDS modules
-from netsec_tester.modules.ips_ids.sql_injection import SQLInjectionModule
-from netsec_tester.modules.ips_ids.xss import XSSModule
-from netsec_tester.modules.ips_ids.command_injection import CommandInjectionModule
-from netsec_tester.modules.ips_ids.directory_traversal import DirectoryTraversalModule
-from netsec_tester.modules.ips_ids.exploits import ExploitsModule
-from netsec_tester.modules.ips_ids.c2_beacon import C2BeaconModule
-from netsec_tester.modules.ips_ids.reconnaissance import ReconnaissanceModule
-from netsec_tester.modules.ips_ids.dos_patterns import DoSPatternsModule
-from netsec_tester.modules.ips_ids.brute_force import BruteForceModule
-from netsec_tester.modules.ips_ids.protocol_anomaly import ProtocolAnomalyModule
-from netsec_tester.modules.ips_ids.ssrf_xxe import SSRFXXEModule
-from netsec_tester.modules.ips_ids.deserialization import DeserializationModule
-
-# DNS modules
-from netsec_tester.modules.dns_filter.tunneling import DNSTunnelingModule
-from netsec_tester.modules.dns_filter.dga import DGAModule
-from netsec_tester.modules.dns_filter.malicious_domains import MaliciousDomainsModule
-from netsec_tester.modules.dns_filter.exfiltration import DNSExfiltrationModule
-from netsec_tester.modules.dns_filter.rebinding import DNSRebindingModule
-from netsec_tester.modules.dns_filter.amplification import DNSAmplificationModule
-from netsec_tester.modules.dns_filter.fast_flux import FastFluxModule
-
-# Web filter modules
-from netsec_tester.modules.web_filter.categories import WebCategoryModule
-from netsec_tester.modules.web_filter.url_patterns import URLPatternsModule
-from netsec_tester.modules.web_filter.tls_inspection import TLSInspectionModule
-from netsec_tester.modules.web_filter.api_abuse import APIAbuseModule
-from netsec_tester.modules.web_filter.web_shells import WebShellsModule
-from netsec_tester.modules.web_filter.http_smuggling import HTTPSmugglingModule
+from netsec_tester.modules.antivirus.archive_evasion import ArchiveEvasionModule
+from netsec_tester.modules.antivirus.cryptominer import CryptominerModule
+from netsec_tester.modules.antivirus.dropper import DropperModule
 
 # Antivirus modules
 from netsec_tester.modules.antivirus.eicar import EICARModule
-from netsec_tester.modules.antivirus.signatures import AVSignaturesModule
 from netsec_tester.modules.antivirus.ransomware import RansomwareModule
-from netsec_tester.modules.antivirus.cryptominer import CryptominerModule
-from netsec_tester.modules.antivirus.dropper import DropperModule
-from netsec_tester.modules.antivirus.archive_evasion import ArchiveEvasionModule
-
-# Video filter modules
-from netsec_tester.modules.video_filter.streaming import StreamingModule
-from netsec_tester.modules.video_filter.p2p_torrent import P2PTorrentModule
-from netsec_tester.modules.video_filter.voip_webrtc import VoIPWebRTCModule
-from netsec_tester.modules.video_filter.gaming import GamingModule
-
-# Benign modules
-from netsec_tester.modules.benign.web_browsing import WebBrowsingModule
+from netsec_tester.modules.antivirus.signatures import AVSignaturesModule
+from netsec_tester.modules.base import ModuleInfo, TrafficCategory, TrafficModule
+from netsec_tester.modules.benign.cloud_services import CloudServicesModule
 from netsec_tester.modules.benign.email import EmailModule
 from netsec_tester.modules.benign.file_transfer import FileTransferModule
-from netsec_tester.modules.benign.cloud_services import CloudServicesModule
 from netsec_tester.modules.benign.iot_device import IoTDeviceModule
 from netsec_tester.modules.benign.mobile_app import MobileAppModule
 from netsec_tester.modules.benign.vpn_proxy import VPNProxyModule
 
+# Benign modules
+from netsec_tester.modules.benign.web_browsing import WebBrowsingModule
+from netsec_tester.modules.dns_filter.amplification import DNSAmplificationModule
+from netsec_tester.modules.dns_filter.dga import DGAModule
+from netsec_tester.modules.dns_filter.exfiltration import DNSExfiltrationModule
+from netsec_tester.modules.dns_filter.fast_flux import FastFluxModule
+from netsec_tester.modules.dns_filter.malicious_domains import MaliciousDomainsModule
+from netsec_tester.modules.dns_filter.rebinding import DNSRebindingModule
+
+# DNS modules
+from netsec_tester.modules.dns_filter.tunneling import DNSTunnelingModule
+from netsec_tester.modules.exfiltration.https_exfil import HTTPSExfilModule
+
 # Exfiltration modules
 from netsec_tester.modules.exfiltration.icmp_covert import ICMPCovertModule
-from netsec_tester.modules.exfiltration.https_exfil import HTTPSExfilModule
 from netsec_tester.modules.exfiltration.protocol_abuse import ProtocolAbuseModule
+from netsec_tester.modules.ips_ids.brute_force import BruteForceModule
+from netsec_tester.modules.ips_ids.c2_beacon import C2BeaconModule
+from netsec_tester.modules.ips_ids.command_injection import CommandInjectionModule
+from netsec_tester.modules.ips_ids.deserialization import DeserializationModule
+from netsec_tester.modules.ips_ids.directory_traversal import DirectoryTraversalModule
+from netsec_tester.modules.ips_ids.dos_patterns import DoSPatternsModule
+from netsec_tester.modules.ips_ids.exploits import ExploitsModule
+from netsec_tester.modules.ips_ids.protocol_anomaly import ProtocolAnomalyModule
+from netsec_tester.modules.ips_ids.reconnaissance import ReconnaissanceModule
 
+# IPS/IDS modules
+from netsec_tester.modules.ips_ids.sql_injection import SQLInjectionModule
+from netsec_tester.modules.ips_ids.ssrf_xxe import SSRFXXEModule
+from netsec_tester.modules.ips_ids.xss import XSSModule
+from netsec_tester.modules.video_filter.gaming import GamingModule
+from netsec_tester.modules.video_filter.p2p_torrent import P2PTorrentModule
+
+# Video filter modules
+from netsec_tester.modules.video_filter.streaming import StreamingModule
+from netsec_tester.modules.video_filter.voip_webrtc import VoIPWebRTCModule
+from netsec_tester.modules.web_filter.api_abuse import APIAbuseModule
+
+# Web filter modules
+from netsec_tester.modules.web_filter.categories import WebCategoryModule
+from netsec_tester.modules.web_filter.http_smuggling import HTTPSmugglingModule
+from netsec_tester.modules.web_filter.tls_inspection import TLSInspectionModule
+from netsec_tester.modules.web_filter.url_patterns import URLPatternsModule
+from netsec_tester.modules.web_filter.web_shells import WebShellsModule
 
 # List of all modules to test (45 total)
 ALL_MODULES = [

@@ -32,7 +32,7 @@ class Scenario:
             config: ScenarioConfig with scenario parameters
         """
         self.config = config
-        self._modules: list["TrafficModule"] = []
+        self._modules: list[TrafficModule] = []
 
     @property
     def name(self) -> str:

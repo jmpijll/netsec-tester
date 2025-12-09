@@ -3,14 +3,14 @@
 import threading
 import time
 from collections import defaultdict
-from dataclasses import dataclass, field
+from dataclasses import dataclass
 from typing import TYPE_CHECKING
 
 from rich.console import Console
-from rich.live import Live
-from rich.table import Table
-from rich.panel import Panel
 from rich.layout import Layout
+from rich.live import Live
+from rich.panel import Panel
+from rich.table import Table
 
 if TYPE_CHECKING:
     from netsec_tester.modules.base import TrafficCategory

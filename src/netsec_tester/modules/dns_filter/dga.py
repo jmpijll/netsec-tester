@@ -3,15 +3,14 @@
 import hashlib
 import random
 import string
+from collections.abc import Iterator
 from datetime import datetime
-from typing import Iterator
 
-from scapy.layers.inet import IP, UDP
 from scapy.layers.dns import DNS, DNSQR
+from scapy.layers.inet import IP, UDP
 from scapy.packet import Packet
 
 from netsec_tester.modules.base import ModuleInfo, TrafficCategory, TrafficModule
-
 
 # Top-level domains commonly used by DGAs
 DGA_TLDS = [

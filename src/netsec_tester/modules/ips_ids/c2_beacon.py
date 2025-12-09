@@ -3,14 +3,13 @@
 import base64
 import random
 import string
-from typing import Iterator
+from collections.abc import Iterator
 
-from scapy.layers.inet import IP, TCP, UDP
 from scapy.layers.dns import DNS, DNSQR
+from scapy.layers.inet import IP, TCP, UDP
 from scapy.packet import Packet, Raw
 
 from netsec_tester.modules.base import ModuleInfo, TrafficCategory, TrafficModule
-
 
 # C2 beacon patterns and indicators
 C2_PATTERNS = [

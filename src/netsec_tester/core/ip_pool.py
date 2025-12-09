@@ -2,7 +2,7 @@
 
 import ipaddress
 import random
-from typing import Iterator
+from collections.abc import Iterator
 
 
 class IPPool:

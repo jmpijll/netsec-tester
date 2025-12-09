@@ -1,13 +1,12 @@
 """Benign email traffic simulation module."""
 
 import random
-from typing import Iterator
+from collections.abc import Iterator
 
 from scapy.layers.inet import IP, TCP
 from scapy.packet import Packet, Raw
 
 from netsec_tester.modules.base import ModuleInfo, TrafficCategory, TrafficModule
-
 
 # SMTP commands for simulation
 SMTP_COMMANDS = [
@@ -93,7 +92,7 @@ class EmailModule(TrafficModule):
     ) -> Iterator[Packet]:
         """Generate SMTP protocol packets."""
         # EHLO command
-        ehlo = f"EHLO client.example.com\r\n"
+        ehlo = "EHLO client.example.com\r\n"
         packet = (
             IP(src=src_ip, dst=dst_ip)
             / TCP(sport=40000 + (self._message_count % 25000), dport=port, flags="PA")

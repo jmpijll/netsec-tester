@@ -2,13 +2,12 @@
 
 import json
 import random
-from typing import Iterator
+from collections.abc import Iterator
 
 from scapy.layers.inet import IP, TCP
 from scapy.packet import Packet, Raw
 
 from netsec_tester.modules.base import ModuleInfo, TrafficCategory, TrafficModule
-
 
 # Known mining pool domains
 MINING_POOLS = [
@@ -176,14 +175,14 @@ class CryptominerModule(TrafficModule):
         """Generate WebSocket-based miner connection."""
         # WebSocket upgrade for browser mining
         ws_upgrade = (
-            f"GET /proxy HTTP/1.1\r\n"
-            f"Host: ws.coinhive.com\r\n"
-            f"Upgrade: websocket\r\n"
-            f"Connection: Upgrade\r\n"
-            f"Sec-WebSocket-Key: dGhlIHNhbXBsZSBub25jZQ==\r\n"
-            f"Sec-WebSocket-Version: 13\r\n"
-            f"Origin: https://example.com\r\n"
-            f"\r\n"
+            "GET /proxy HTTP/1.1\r\n"
+            "Host: ws.coinhive.com\r\n"
+            "Upgrade: websocket\r\n"
+            "Connection: Upgrade\r\n"
+            "Sec-WebSocket-Key: dGhlIHNhbXBsZSBub25jZQ==\r\n"
+            "Sec-WebSocket-Version: 13\r\n"
+            "Origin: https://example.com\r\n"
+            "\r\n"
         )
 
         packet = (
@@ -226,13 +225,7 @@ class CryptominerModule(TrafficModule):
         self, src_ip: str, dst_ip: str, port: int
     ) -> Iterator[Packet]:
         """Generate NiceHash stratum pattern."""
-        # NiceHash stratum protocol
-        nicehash_pools = [
-            "stratum+tcp://daggerhashimoto.eu.nicehash.com",
-            "stratum+tcp://randomxmonero.usa.nicehash.com",
-            "stratum+tcp://cryptonight.eu.nicehash.com",
-        ]
-
+        # NiceHash stratum protocol subscription
         stratum_msg = {
             "id": 1,
             "method": "mining.subscribe",

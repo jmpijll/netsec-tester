@@ -1,13 +1,12 @@
 """Ransomware indicator traffic module."""
 
 import random
-from typing import Iterator
+from collections.abc import Iterator
 
 from scapy.layers.inet import IP, TCP
 from scapy.packet import Packet, Raw
 
 from netsec_tester.modules.base import ModuleInfo, TrafficCategory, TrafficModule
-
 
 # Known ransomware file extensions
 RANSOMWARE_EXTENSIONS = [

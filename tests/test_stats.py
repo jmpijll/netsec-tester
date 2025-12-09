@@ -2,8 +2,6 @@
 
 import time
 
-import pytest
-
 from netsec_tester.core.stats import StatsCollector
 from netsec_tester.modules.base import TrafficCategory
 

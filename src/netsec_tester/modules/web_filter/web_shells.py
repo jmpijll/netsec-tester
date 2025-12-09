@@ -2,13 +2,12 @@
 
 import base64
 import random
-from typing import Iterator
+from collections.abc import Iterator
 
 from scapy.layers.inet import IP, TCP
 from scapy.packet import Packet, Raw
 
 from netsec_tester.modules.base import ModuleInfo, TrafficCategory, TrafficModule
-
 
 # Common web shell filenames
 WEBSHELL_FILENAMES = [
@@ -179,7 +178,7 @@ class WebShellsModule(TrafficModule):
 
         encoded_requests = [
             f"GET /shell.php?c={cmd}&e=base64 HTTP/1.1",
-            f"GET /index.php?page=php://filter/convert.base64-encode/resource=config HTTP/1.1",
+            "GET /index.php?page=php://filter/convert.base64-encode/resource=config HTTP/1.1",
             f"GET /index.php?file=data://text/plain;base64,{cmd} HTTP/1.1",
         ]
 

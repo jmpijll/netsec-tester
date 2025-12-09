@@ -17,7 +17,7 @@ class ScenarioRegistry:
     def __init__(self) -> None:
         """Initialize the scenario registry."""
         self._scenarios: dict[str, Scenario] = {}
-        self._modules: dict[str, type["TrafficModule"]] = {}
+        self._modules: dict[str, type[TrafficModule]] = {}
 
     def register_module(self, name: str, module_class: type["TrafficModule"]) -> None:
         """Register a traffic module class.

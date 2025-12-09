@@ -159,8 +159,8 @@ class TrafficEngine:
         # Check for common protocols
         if hasattr(packet, "haslayer"):
             # Import here to avoid circular imports
-            from scapy.layers.inet import TCP, UDP, ICMP
             from scapy.layers.dns import DNS
+            from scapy.layers.inet import ICMP, TCP, UDP
 
             if packet.haslayer(TCP):
                 return "TCP"

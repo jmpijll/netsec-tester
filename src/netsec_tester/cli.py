@@ -3,7 +3,6 @@
 import signal
 import sys
 from pathlib import Path
-from typing import Optional
 
 import click
 from rich.console import Console
@@ -40,7 +39,7 @@ def get_default_config_path() -> Path:
     help="Path to custom configuration file",
 )
 @click.pass_context
-def main(ctx: click.Context, verbose: bool, config: Optional[Path]) -> None:
+def main(ctx: click.Context, verbose: bool, config: Path | None) -> None:
     """NetSec Tester - Network security testing tool for NGFW validation.
 
     Generate diverse network traffic patterns to test firewall policies
@@ -170,9 +169,9 @@ def run(
     scenario_name: str,
     ip_range: str,
     target: str,
-    rate: Optional[int],
-    interface: Optional[str],
-    duration: Optional[int],
+    rate: int | None,
+    interface: str | None,
+    duration: int | None,
     dry_run: bool,
 ) -> None:
     """Run a test scenario.

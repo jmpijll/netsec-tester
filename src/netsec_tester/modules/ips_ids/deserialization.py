@@ -2,13 +2,12 @@
 
 import base64
 import random
-from typing import Iterator
+from collections.abc import Iterator
 
 from scapy.layers.inet import IP, TCP
 from scapy.packet import Packet, Raw
 
 from netsec_tester.modules.base import ModuleInfo, TrafficCategory, TrafficModule
-
 
 # Java serialization magic bytes and common gadget signatures
 JAVA_SERIAL_MAGIC = b"\xac\xed\x00\x05"  # Java serialization header
@@ -83,9 +82,6 @@ class DeserializationModule(TrafficModule):
             + b"\x00" * 8  # serialVersionUID
             + b"\x02\x00\x00\x78\x70"  # Flags and end
         )
-
-        # Base64 encode for HTTP transport
-        b64_payload = base64.b64encode(serialized).decode()
 
         # Send via POST with common content types
         content_types = [

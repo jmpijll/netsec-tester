@@ -1,12 +1,11 @@
 """Cross-Site Scripting (XSS) pattern traffic module."""
 
-from typing import Iterator
+from collections.abc import Iterator
 
 from scapy.layers.inet import IP, TCP
 from scapy.packet import Packet, Raw
 
 from netsec_tester.modules.base import ModuleInfo, TrafficCategory, TrafficModule
-
 
 # XSS payloads that trigger IPS signatures
 XSS_PAYLOADS = [

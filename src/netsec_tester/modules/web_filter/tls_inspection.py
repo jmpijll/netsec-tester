@@ -2,13 +2,12 @@
 
 import random
 import struct
-from typing import Iterator
+from collections.abc import Iterator
 
 from scapy.layers.inet import IP, TCP
 from scapy.packet import Packet, Raw
 
 from netsec_tester.modules.base import ModuleInfo, TrafficCategory, TrafficModule
-
 
 # Categories of domains for SNI-based filtering
 BLOCKED_SNI_DOMAINS = {
@@ -204,9 +203,7 @@ class TLSInspectionModule(TrafficModule):
         self, src_ip: str, dst_ip: str, port: int
     ) -> Iterator[Packet]:
         """Generate Encrypted SNI / ECH patterns."""
-        # ESNI/ECH extension indicator
-        sni = ""  # Empty SNI with ESNI extension
-
+        # ESNI/ECH uses empty or encrypted SNI extension
         # Build custom Client Hello with ESNI extension
         client_hello_data = (
             struct.pack(">H", 0x0303)  # Version

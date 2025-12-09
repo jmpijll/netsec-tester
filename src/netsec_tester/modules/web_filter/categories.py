@@ -1,13 +1,12 @@
 """Web filtering category test module."""
 
 import random
-from typing import Iterator
+from collections.abc import Iterator
 
 from scapy.layers.inet import IP, TCP
 from scapy.packet import Packet, Raw
 
 from netsec_tester.modules.base import ModuleInfo, TrafficCategory, TrafficModule
-
 
 # Web filtering test URLs organized by category
 # These are patterns/test domains, not real malicious sites

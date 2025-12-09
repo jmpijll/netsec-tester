@@ -1,14 +1,13 @@
 """Malicious domain pattern module."""
 
 import random
-from typing import Iterator
+from collections.abc import Iterator
 
-from scapy.layers.inet import IP, UDP
 from scapy.layers.dns import DNS, DNSQR
+from scapy.layers.inet import IP, UDP
 from scapy.packet import Packet
 
 from netsec_tester.modules.base import ModuleInfo, TrafficCategory, TrafficModule
-
 
 # Patterns that mimic malicious domain characteristics
 # These are synthetic domains designed to trigger detection, not real malware domains

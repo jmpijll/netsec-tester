@@ -1,7 +1,7 @@
 """HTTP request smuggling traffic module."""
 
 import random
-from typing import Iterator
+from collections.abc import Iterator
 
 from scapy.layers.inet import IP, TCP
 from scapy.packet import Packet, Raw

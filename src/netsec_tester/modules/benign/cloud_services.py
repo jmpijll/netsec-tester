@@ -1,13 +1,12 @@
 """Cloud services traffic module."""
 
 import random
-from typing import Iterator
+from collections.abc import Iterator
 
 from scapy.layers.inet import IP, TCP
 from scapy.packet import Packet, Raw
 
 from netsec_tester.modules.base import ModuleInfo, TrafficCategory, TrafficModule
-
 
 # Cloud provider endpoints
 AWS_ENDPOINTS = [
@@ -249,13 +248,13 @@ class CloudServicesModule(TrafficModule):
     ) -> Iterator[Packet]:
         """Generate Dropbox API request."""
         http_request = (
-            f"POST /2/files/list_folder HTTP/1.1\r\n"
-            f"Host: api.dropboxapi.com\r\n"
-            f"Authorization: Bearer sl.access_token_here\r\n"
-            f"Content-Type: application/json\r\n"
-            f'Dropbox-API-Arg: {{"path": ""}}\r\n'
-            f"User-Agent: Dropbox-SDK-Python/11.0.0\r\n"
-            f"\r\n"
+            "POST /2/files/list_folder HTTP/1.1\r\n"
+            "Host: api.dropboxapi.com\r\n"
+            "Authorization: Bearer sl.access_token_here\r\n"
+            "Content-Type: application/json\r\n"
+            'Dropbox-API-Arg: {"path": ""}\r\n'
+            "User-Agent: Dropbox-SDK-Python/11.0.0\r\n"
+            "\r\n"
         )
 
         packet = (

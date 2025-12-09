@@ -2,13 +2,12 @@
 
 import json
 import random
-from typing import Iterator
+from collections.abc import Iterator
 
 from scapy.layers.inet import IP, TCP
 from scapy.packet import Packet, Raw
 
 from netsec_tester.modules.base import ModuleInfo, TrafficCategory, TrafficModule
-
 
 # Mobile app store endpoints
 APP_STORES = {
@@ -204,11 +203,11 @@ class MobileAppModule(TrafficModule):
     ) -> Iterator[Packet]:
         """Generate app update check request."""
         http_request = (
-            f"GET /api/v1/version/check?app_id=com.myapp&current_version=1.0.0 HTTP/1.1\r\n"
-            f"Host: api.myapp.com\r\n"
-            f"User-Agent: MyApp/1.0 Android/14\r\n"
-            f"Accept: application/json\r\n"
-            f"\r\n"
+            "GET /api/v1/version/check?app_id=com.myapp&current_version=1.0.0 HTTP/1.1\r\n"
+            "Host: api.myapp.com\r\n"
+            "User-Agent: MyApp/1.0 Android/14\r\n"
+            "Accept: application/json\r\n"
+            "\r\n"
         )
 
         packet = (

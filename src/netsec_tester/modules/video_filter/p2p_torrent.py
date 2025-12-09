@@ -2,13 +2,12 @@
 
 import random
 import struct
-from typing import Iterator
+from collections.abc import Iterator
 
 from scapy.layers.inet import IP, TCP, UDP
 from scapy.packet import Packet, Raw
 
 from netsec_tester.modules.base import ModuleInfo, TrafficCategory, TrafficModule
-
 
 # BitTorrent protocol constants
 BT_PROTOCOL = b"BitTorrent protocol"

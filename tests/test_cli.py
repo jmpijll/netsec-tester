@@ -1,7 +1,7 @@
 """Tests for CLI commands."""
 
-from pathlib import Path
 import tempfile
+from pathlib import Path
 
 import pytest
 from click.testing import CliRunner

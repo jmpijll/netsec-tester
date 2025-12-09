@@ -37,7 +37,8 @@ jobs:
       - name: Run mypy type checking
         run: |
           pip install -e ".[dev]"
-          mypy src --ignore-missing-imports
+          pip install types-PyYAML
+          mypy src
 
   test:
     name: Test (Python ${{ matrix.python-version }}, ${{ matrix.os }})

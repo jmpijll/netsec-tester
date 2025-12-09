@@ -2,13 +2,12 @@
 
 import base64
 import random
-from typing import Iterator
+from collections.abc import Iterator
 
 from scapy.layers.inet import IP, TCP
 from scapy.packet import Packet, Raw
 
 from netsec_tester.modules.base import ModuleInfo, TrafficCategory, TrafficModule
-
 
 # Common usernames for brute force
 COMMON_USERNAMES = [
@@ -48,11 +47,8 @@ class BruteForceModule(TrafficModule):
 
     def _generate_ssh_brute_force(self, src_ip: str, dst_ip: str) -> Iterator[Packet]:
         """Generate SSH brute force patterns."""
-        username = random.choice(COMMON_USERNAMES)
-        password = random.choice(COMMON_PASSWORDS)
-
         # SSH banner exchange
-        ssh_banner = f"SSH-2.0-OpenSSH_brute\r\n"
+        ssh_banner = "SSH-2.0-OpenSSH_brute\r\n"
         packet = (
             IP(src=src_ip, dst=dst_ip)
             / TCP(sport=random.randint(49152, 65535), dport=22, flags="PA")

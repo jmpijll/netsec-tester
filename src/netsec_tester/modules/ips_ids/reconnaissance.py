@@ -1,13 +1,12 @@
 """Reconnaissance and scanning pattern traffic module."""
 
 import random
-from typing import Iterator
+from collections.abc import Iterator
 
-from scapy.layers.inet import IP, TCP, UDP, ICMP
+from scapy.layers.inet import ICMP, IP, TCP, UDP
 from scapy.packet import Packet, Raw
 
 from netsec_tester.modules.base import ModuleInfo, TrafficCategory, TrafficModule
-
 
 # Common ports for scanning
 COMMON_PORTS = [

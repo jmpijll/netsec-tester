@@ -1,9 +1,9 @@
 """Base class for all traffic generation modules."""
 
 from abc import ABC, abstractmethod
+from collections.abc import Iterator
 from dataclasses import dataclass
 from enum import Enum
-from typing import Iterator
 
 from scapy.packet import Packet
 
