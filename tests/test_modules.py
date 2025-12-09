@@ -429,7 +429,7 @@ class TestAntivirusModules:
             "unlock",
         ]
         found = any(p in combined.lower() for p in patterns)
-        assert found, f"Expected ransomware patterns in output"
+        assert found, "Expected ransomware patterns in output"
 
     def test_cryptominer_stratum(self) -> None:
         """Test cryptominer module generates stratum patterns."""
