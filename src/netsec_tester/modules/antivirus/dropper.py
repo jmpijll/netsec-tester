@@ -119,11 +119,7 @@ class DropperModule(TrafficModule):
         agent = random.choice(lolbin_agents)
 
         http_request = (
-            f"GET {path} HTTP/1.1\r\n"
-            f"Host: {dst_ip}\r\n"
-            f"User-Agent: {agent}\r\n"
-            f"Accept: */*\r\n"
-            f"\r\n"
+            f"GET {path} HTTP/1.1\r\nHost: {dst_ip}\r\nUser-Agent: {agent}\r\nAccept: */*\r\n\r\n"
         )
 
         packet = (

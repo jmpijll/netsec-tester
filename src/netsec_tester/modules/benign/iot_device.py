@@ -129,10 +129,7 @@ class IoTDeviceModule(TrafficModule):
         endpoint = random.choice(endpoints)
 
         http_request = (
-            f"GET {endpoint} HTTP/1.1\r\n"
-            f"Host: philips-hue.local\r\n"
-            f"User-Agent: Hue/2.0\r\n"
-            f"\r\n"
+            f"GET {endpoint} HTTP/1.1\r\nHost: philips-hue.local\r\nUser-Agent: Hue/2.0\r\n\r\n"
         )
 
         packet = (

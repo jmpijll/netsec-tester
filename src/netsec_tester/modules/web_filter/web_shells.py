@@ -201,9 +201,7 @@ class WebShellsModule(TrafficModule):
 
         path = random.choice(aspx_shells)
 
-        http_request = (
-            f"GET {path} HTTP/1.1\r\n" f"Host: {dst_ip}\r\n" f"User-Agent: Mozilla/5.0\r\n" f"\r\n"
-        )
+        http_request = f"GET {path} HTTP/1.1\r\nHost: {dst_ip}\r\nUser-Agent: Mozilla/5.0\r\n\r\n"
 
         packet = (
             IP(src=src_ip, dst=dst_ip)
@@ -223,9 +221,7 @@ class WebShellsModule(TrafficModule):
 
         path = random.choice(jsp_shells)
 
-        http_request = (
-            f"GET {path} HTTP/1.1\r\n" f"Host: {dst_ip}\r\n" f"User-Agent: Mozilla/5.0\r\n" f"\r\n"
-        )
+        http_request = f"GET {path} HTTP/1.1\r\nHost: {dst_ip}\r\nUser-Agent: Mozilla/5.0\r\n\r\n"
 
         packet = (
             IP(src=src_ip, dst=dst_ip)

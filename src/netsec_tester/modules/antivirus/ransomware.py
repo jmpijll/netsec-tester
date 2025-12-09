@@ -101,10 +101,7 @@ class RansomwareModule(TrafficModule):
         note_name = random.choice(RANSOM_NOTES)
 
         http_request = (
-            f"GET /{note_name} HTTP/1.1\r\n"
-            f"Host: {dst_ip}\r\n"
-            f"User-Agent: Mozilla/5.0\r\n"
-            f"\r\n"
+            f"GET /{note_name} HTTP/1.1\r\nHost: {dst_ip}\r\nUser-Agent: Mozilla/5.0\r\n\r\n"
         )
 
         packet = (
@@ -122,10 +119,7 @@ class RansomwareModule(TrafficModule):
         filename = f"important_document{extension}"
 
         http_request = (
-            f"GET /uploads/{filename} HTTP/1.1\r\n"
-            f"Host: {dst_ip}\r\n"
-            f"User-Agent: Mozilla/5.0\r\n"
-            f"\r\n"
+            f"GET /uploads/{filename} HTTP/1.1\r\nHost: {dst_ip}\r\nUser-Agent: Mozilla/5.0\r\n\r\n"
         )
 
         packet = (

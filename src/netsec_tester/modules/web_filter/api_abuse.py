@@ -113,7 +113,7 @@ class APIAbuseModule(TrafficModule):
         ]
 
         header = random.choice(bypass_headers)
-        ip_value = f"{random.randint(1,254)}.{random.randint(1,254)}.{random.randint(1,254)}.{random.randint(1,254)}"
+        ip_value = f"{random.randint(1, 254)}.{random.randint(1, 254)}.{random.randint(1, 254)}.{random.randint(1, 254)}"
         header = header.rsplit(":", 1)[0] + f": {ip_value}"
 
         http_request = (
@@ -231,9 +231,7 @@ class APIAbuseModule(TrafficModule):
 
         path = random.choice(old_versions)
 
-        http_request = (
-            f"GET {path} HTTP/1.1\r\n" f"Host: {dst_ip}\r\n" f"User-Agent: Mozilla/5.0\r\n" f"\r\n"
-        )
+        http_request = f"GET {path} HTTP/1.1\r\nHost: {dst_ip}\r\nUser-Agent: Mozilla/5.0\r\n\r\n"
 
         packet = (
             IP(src=src_ip, dst=dst_ip)

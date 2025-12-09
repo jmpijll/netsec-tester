@@ -168,9 +168,7 @@ class HTTPSmugglingModule(TrafficModule):
 
         injection = random.choice(injected_headers)
 
-        smuggled_request = (
-            f"GET / HTTP/1.1\r\n" f"Host: {dst_ip}\r\n" f"X-Custom: {injection}\r\n" f"\r\n"
-        )
+        smuggled_request = f"GET / HTTP/1.1\r\nHost: {dst_ip}\r\nX-Custom: {injection}\r\n\r\n"
 
         packet = (
             IP(src=src_ip, dst=dst_ip)

@@ -179,10 +179,7 @@ class VPNProxyModule(TrafficModule):
         path = random.choice(vpn_paths)
 
         http_request = (
-            f"GET {path} HTTP/1.1\r\n"
-            f"Host: vpn.company.com\r\n"
-            f"User-Agent: AnyConnect\r\n"
-            f"\r\n"
+            f"GET {path} HTTP/1.1\r\nHost: vpn.company.com\r\nUser-Agent: AnyConnect\r\n\r\n"
         )
 
         packet = (
